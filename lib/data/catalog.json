@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "bangles",
+    "name": "Bangles",
+    "category": "bangles",
+    "image": "/products/bangles.png",
+    "priceGBP": 12940,
+    "weightGrams": 105.5,
+    "karat": "24k",
+    "measure": { "label": "Size", "value": "2.4" },
+    "gradient": ["#5c1a1a", "#d4af37"],
+    "description": "A set of intricately diamond-cut bangles in radiant 24k gold — a statement of pure gold craftsmanship, made for weddings, Eid and life's most treasured occasions."
+  },
+  {
+    "slug": "necklace",
+    "name": "Necklace",
+    "category": "necklace-sets",
+    "image": "/products/necklace.png",
+    "priceGBP": 7100,
+    "weightGrams": 82.4,
+    "karat": "22k",
+    "measure": { "label": "Length", "value": "16 inches" },
+    "gradient": ["#6b1f2a", "#b8860b"],
+    "description": "An elegant gold necklace crafted for occasion and everyday elegance alike — a timeless centrepiece with a graceful 16-inch drop."
+  },
+  {
+    "slug": "bracelets",
+    "name": "Bracelets",
+    "category": "bracelets",
+    "image": "/products/bracelets.png",
+    "priceGBP": 650,
+    "priceMaxGBP": 750,
+    "weightGrams": 5,
+    "weightMaxGrams": 5.6,
+    "karat": "22k",
+    "measure": { "label": "Length", "value": "7 – 7.5 inches" },
+    "gradient": ["#8a2b2b", "#e0b84c"],
+    "description": "A refined gold bracelet in warm 22k gold — light, elegant and perfect for everyday wear or gifting. Delicate craftsmanship that sits beautifully on the wrist."
+  },
+  {
+    "slug": "earrings",
+    "name": "Earrings",
+    "category": "earrings",
+    "image": "/products/earrings.png",
+    "priceGBP": 820,
+    "weightGrams": 9,
+    "karat": "22k",
+    "gradient": ["#701c28", "#caa53d"],
+    "description": "Elegant 22k gold earrings — from classic studs to statement jhumkas and chandbalis. Full details and photography coming soon."
+  },
+  {
+    "slug": "rings",
+    "name": "Rings",
+    "category": "rings",
+    "image": "/products/rings.png",
+    "priceGBP": 560,
+    "weightGrams": 6,
+    "karat": "22k",
+    "gradient": ["#7a1f2b", "#c9a227"],
+    "description": "Fine 22k gold rings for every occasion, including bespoke commissions. Full details and photography coming soon."
+  }
+]

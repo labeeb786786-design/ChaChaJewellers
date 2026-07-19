@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Chacha Jewellers — premium South Asian gold jewellery brand.
+  Palette: warm gold + deep charcoal/black + deep maroon + soft cream.
+  Headings: Playfair Display (serif). Body: Inter (sans).
+*/
+
+@theme inline {
+  /* Brand palette (use as bg-gold, text-maroon, bg-charcoal, etc.) */
+  --color-gold: #c9a227;
+  --color-gold-soft: #e2c565;
+  --color-gold-deep: #a67c1a;
+  --color-charcoal: #0d0d0f;
+  --color-charcoal-soft: #161418;
+  --color-maroon: #5c1a1a;
+  --color-maroon-deep: #3d0f0f;
+  --color-cream: #faf6ee;
+  --color-cream-soft: #f2ebdd;
+
+  /* Fonts (wired up in app/layout.tsx via next/font) */
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* shadcn/ui semantic tokens mapped to the brand */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Default surface = soft cream (light, elegant) */
+  --background: #faf6ee;
+  --foreground: #1c1713;
+  --card: #ffffff;
+  --card-foreground: #1c1713;
+  --popover: #ffffff;
+  --popover-foreground: #1c1713;
+  --primary: #a67c1a;            /* deep gold */
+  --primary-foreground: #fdfbf5;
+  --secondary: #5c1a1a;          /* maroon */
+  --secondary-foreground: #faf6ee;
+  --muted: #f2ebdd;
+  --muted-foreground: #6b5f4f;
+  --accent: #f2ebdd;
+  --accent-foreground: #5c1a1a;
+  --destructive: #b3261e;
+  --border: #e6dcc7;
+  --input: #e6dcc7;
+  --ring: #c9a227;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Continuous marquee for the reviews section */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 45s linear infinite;
+}
+.marquee-paused:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Subtle gold shimmer for accents */
+.text-gold-gradient {
+  background: linear-gradient(90deg, #a67c1a 0%, #e2c565 50%, #a67c1a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-vignette {
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(201, 162, 39, 0.14) 0%, transparent 55%),
+    linear-gradient(180deg, #0d0d0f 0%, #161418 100%);
+}
+
+/*
+  Warm-white canvas with wide, luxurious gold veining — think white marble with
+  flowing gold streaks. Broad soft bands of bright gold (no dark/black edges),
+  layered with radial "sheen" glows for depth and a metallic feel.
+*/
+.bg-luxe-gold {
+  background-color: #fdfaf1;
+  background-image:
+    /* soft warm sheen from the top */
+    radial-gradient(140% 90% at 15% 0%, rgba(226, 197, 101, 0.22) 0%, transparent 45%),
+    radial-gradient(120% 90% at 90% 20%, rgba(212, 175, 55, 0.16) 0%, transparent 50%),
+    radial-gradient(100% 80% at 70% 100%, rgba(201, 162, 39, 0.14) 0%, transparent 55%),
+    /* wide flowing gold streaks */
+    repeating-linear-gradient(
+      122deg,
+      transparent 0 150px,
+      rgba(212, 175, 55, 0) 150px,
+      rgba(226, 197, 101, 0.28) 185px,
+      rgba(212, 175, 55, 0) 220px,
+      transparent 220px 420px
+    ),
+    repeating-linear-gradient(
+      122deg,
+      transparent 0 90px,
+      rgba(201, 162, 39, 0) 90px,
+      rgba(201, 162, 39, 0.14) 108px,
+      rgba(201, 162, 39, 0) 126px,
+      transparent 126px 340px
+    ),
+    repeating-linear-gradient(
+      122deg,
+      transparent 0 40px,
+      rgba(230, 205, 120, 0) 40px,
+      rgba(230, 205, 120, 0.16) 50px,
+      rgba(230, 205, 120, 0) 60px,
+      transparent 60px 210px
+    );
+  background-attachment: fixed;
+}
+
+/* Hide the scrollbar on horizontal scrollers (scrolling still works). */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide native number-input spinners (we provide themed +/- steppers). */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

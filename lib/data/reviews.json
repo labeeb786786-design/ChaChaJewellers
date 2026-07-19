@@ -1,0 +1,42 @@
+[
+  {
+    "id": "r1",
+    "author": "PLACEHOLDER — replace with real Google review",
+    "rating": 5,
+    "text": "Absolutely beautiful bridal set, exactly what we wanted for the wedding. The team took the time to understand the style and the finish on the 22k gold is stunning. Highly recommend Chacha Jewellers.",
+    "source": "google",
+    "relativeTime": "2 weeks ago"
+  },
+  {
+    "id": "r2",
+    "author": "PLACEHOLDER — replace with real Google review",
+    "rating": 5,
+    "text": "Ordered a custom ring and the craftsmanship was first class. They kept me updated throughout and the price was very fair. A proper family-run jeweller you can trust.",
+    "source": "google",
+    "relativeTime": "1 month ago"
+  },
+  {
+    "id": "r3",
+    "author": "PLACEHOLDER — replace with real Google review",
+    "rating": 5,
+    "text": "Came in to sell some old gold and got an honest, same-day valuation with no pressure. Friendly and professional. Will definitely be back.",
+    "source": "google",
+    "relativeTime": "1 month ago"
+  },
+  {
+    "id": "r4",
+    "author": "PLACEHOLDER — replace with real Google review",
+    "rating": 5,
+    "text": "Gorgeous selection of bangles and necklace sets. Staff were so welcoming and helped me pick the perfect pieces for Eid. Lovely experience from start to finish.",
+    "source": "google",
+    "relativeTime": "2 months ago"
+  },
+  {
+    "id": "r5",
+    "author": "PLACEHOLDER — replace with real Google review",
+    "rating": 5,
+    "text": "Had my ring resized while I waited and it came back like new. Genuinely good value and a warm, welcoming shop. The best jeweller in Oldham.",
+    "source": "google",
+    "relativeTime": "3 months ago"
+  }
+]
