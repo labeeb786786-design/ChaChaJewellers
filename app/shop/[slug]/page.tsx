@@ -128,10 +128,10 @@ export default async function ProductPage({
                   Call {SITE.phone}
                 </a>
                 <Link
-                  href="/appointments"
+                  href="/contact"
                   className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-2.5 text-sm font-semibold text-gold-deep transition-colors hover:bg-gold/10"
                 >
-                  Book a Viewing
+                  Contact us
                 </Link>
               </div>
             </div>

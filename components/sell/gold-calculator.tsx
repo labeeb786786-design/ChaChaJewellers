@@ -12,7 +12,7 @@ import {
   Info,
   Plus,
   Minus,
-  CalendarCheck,
+  MessageCircle,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -80,7 +80,7 @@ export function GoldCalculator({
   const [customKarat, setCustomKarat] = useState("");
   const [weightError, setWeightError] = useState("");
   const [karatError, setKaratError] = useState("");
-  const [confirmAction, setConfirmAction] = useState<null | "call" | "appointment">(
+  const [confirmAction, setConfirmAction] = useState<null | "call" | "contact">(
     null
   );
 
@@ -379,11 +379,11 @@ export function GoldCalculator({
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <button
-                onClick={() => setConfirmAction("appointment")}
+                onClick={() => setConfirmAction("contact")}
                 className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-charcoal shadow-sm transition-colors hover:bg-gold-deep hover:text-cream"
               >
-                <CalendarCheck className="size-4" />
-                Book an appointment
+                <MessageCircle className="size-4" />
+                Contact us
               </button>
               <button
                 onClick={() => setConfirmAction("call")}
@@ -413,7 +413,7 @@ export function GoldCalculator({
         )}
       </div>
 
-      {/* Confirm modal — repeats the estimate warning before calling OR booking */}
+      {/* Confirm modal — repeats the estimate warning before calling or contacting */}
       {confirmAction && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center bg-charcoal/60 p-4 backdrop-blur-sm"
@@ -434,7 +434,7 @@ export function GoldCalculator({
               <Info className="size-6" />
             </span>
             <h3 className="mt-4 font-serif text-lg font-semibold text-charcoal">
-              {confirmAction === "call" ? "Before you call" : "Before you book"}
+              {confirmAction === "call" ? "Before you call" : "Before you get in touch"}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-foreground/70">
               {DISCLAIMER}
@@ -457,10 +457,10 @@ export function GoldCalculator({
                 </a>
               ) : (
                 <Link
-                  href="/appointments"
+                  href="/contact"
                   className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-gold-deep hover:text-cream"
                 >
-                  <CalendarCheck className="size-4" />
+                  <MessageCircle className="size-4" />
                   Continue
                 </Link>
               )}

@@ -1,11 +1,21 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, ShieldCheck, Scale, Award } from "lucide-react";
 
 import { SITE } from "@/lib/site";
 import { Button } from "@/components/ui/button";
-import { InstagramIcon } from "@/components/icons/social";
+import {
+  InstagramIcon,
+  WhatsAppIcon,
+  FacebookIcon,
+} from "@/components/icons/social";
 import { StoreBackdrop } from "@/components/home/store-backdrop";
 import { StoreCarousel } from "@/components/home/store-carousel";
+
+const ASSURANCES = [
+  { icon: ShieldCheck, label: "Guaranteed Purity" },
+  { icon: Scale, label: "Transparent Valuations" },
+  { icon: Award, label: "Certified Craftsmanship" },
+];
 
 /*
  * Tagline options (chosen: #1). Swap in place if the client prefers another:
@@ -27,7 +37,7 @@ export function Hero() {
       <div className="pointer-events-none absolute -right-24 -top-24 z-[2] size-96 rounded-full border border-gold/20" />
       <div className="pointer-events-none absolute -bottom-32 -left-24 z-[2] size-96 rounded-full border border-gold/10" />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:py-28">
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:pt-28">
         <div className="relative z-10">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1.5 text-xs font-medium text-gold-soft">
             <Star className="size-3.5 fill-gold text-gold" />
@@ -56,8 +66,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-cream/60">
-            <span>{SITE.hours}</span>
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-cream/70">
             <a
               href={SITE.instagram.url}
               target="_blank"
@@ -65,7 +74,31 @@ export function Hero() {
               className="inline-flex items-center gap-1.5 transition-colors hover:text-gold"
             >
               <InstagramIcon className="size-4" />
-              {SITE.instagram.followers} followers
+              Instagram
+            </a>
+            <span aria-hidden="true" className="text-cream/25">
+              |
+            </span>
+            <a
+              href={SITE.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-gold"
+            >
+              <WhatsAppIcon className="size-4" />
+              WhatsApp
+            </a>
+            <span aria-hidden="true" className="text-cream/25">
+              |
+            </span>
+            <a
+              href={SITE.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-gold"
+            >
+              <FacebookIcon className="size-4" />
+              Facebook
             </a>
           </div>
         </div>
@@ -73,6 +106,25 @@ export function Hero() {
         {/* Hero visual — scrollable carousel of real store photos */}
         <div className="relative z-10">
           <StoreCarousel />
+        </div>
+      </div>
+
+      {/* Assurance trust bar — spans the bottom of the hero, above the next section */}
+      <div className="relative z-10 mx-auto mt-14 max-w-7xl px-6 pb-20 lg:mt-20 lg:pb-24">
+        <div className="grid grid-cols-3 gap-4 border-t border-cream/15 pt-10 sm:gap-8 lg:pt-14">
+          {ASSURANCES.map((a) => (
+            <div
+              key={a.label}
+              className="flex flex-col items-center gap-3 text-center"
+            >
+              <span className="flex size-14 items-center justify-center rounded-full bg-gold/15 text-gold sm:size-16">
+                <a.icon className="size-7 sm:size-8" />
+              </span>
+              <span className="text-sm font-semibold text-cream sm:text-base lg:text-lg">
+                {a.label}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { FaqAccordion, type Faq } from "@/components/faq/faq-accordion";
 export const metadata = {
   title: "FAQs & Support",
   description:
-    "Answers to common questions about buying and selling gold, repairs, bespoke jewellery, appointments and visiting Chacha Jewellers in Oldham.",
+    "Answers to common questions about buying and selling gold, repairs, bespoke jewellery and visiting Chacha Jewellers in Oldham.",
 };
 
 const FAQS: Faq[] = [
@@ -23,8 +23,8 @@ const FAQS: Faq[] = [
     a: "Of course! We offer ring resizing, chain and clasp repairs, cleaning, polishing and engraving in our own workshop — many done while you wait. Pop in or give us a call and we'll happily sort it for you.",
   },
   {
-    q: "Do I need an appointment to visit?",
-    a: "Not at all — you're very welcome to walk in any day during our opening hours. That said, if you're shopping for a bridal set or a bespoke piece, booking a time lets us give you our full, unhurried attention.",
+    q: "Can I just walk in?",
+    a: "Absolutely — you're always welcome to walk in any day during our opening hours, 7 days a week. There's no need to arrange anything in advance; a warm welcome is waiting whenever you drop by.",
   },
   {
     q: "Do you create bespoke or custom pieces?",
@@ -36,7 +36,7 @@ const FAQS: Faq[] = [
   },
   {
     q: "Where are you, and when are you open?",
-    a: `You'll find us at ${SITE.address.full}, open 7 days a week from 11am to 7pm. Whether you're buying, selling or simply browsing, there's a warm welcome waiting.`,
+    a: `You'll find us at ${SITE.address.full}, open 7 days a week. Whether you're buying, selling or simply browsing, there's a warm welcome waiting.`,
   },
 ];
 

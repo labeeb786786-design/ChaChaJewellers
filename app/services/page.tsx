@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, CalendarCheck, MapPin, Navigation, Sparkles } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Navigation, Sparkles } from "lucide-react";
 
 import { SERVICES } from "@/lib/services";
 import { SITE } from "@/lib/site";
@@ -87,17 +87,17 @@ export default function ServicesPage() {
           {/* Three clear ways to access our services */}
           <div className="mt-8 grid gap-4 text-left sm:grid-cols-3">
             <Link
-              href="/appointments"
+              href="/contact"
               className="group flex flex-col items-center gap-2 rounded-2xl border border-gold/25 bg-charcoal/25 p-5 text-center transition-colors hover:border-gold hover:bg-charcoal/40"
             >
               <span className="flex size-11 items-center justify-center rounded-full bg-gold text-charcoal">
-                <CalendarCheck className="size-5" />
+                <MessageCircle className="size-5" />
               </span>
               <span className="font-serif text-base font-semibold text-cream">
-                Book an appointment
+                Contact us
               </span>
               <span className="text-xs text-cream/70">
-                Reserve a time that suits you
+                Call, WhatsApp or message us
               </span>
             </Link>
 
@@ -133,7 +133,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-cream/70">
-            <span>Open 7 days a week, 11am–7pm</span>
+            <span>{SITE.hours}</span>
             <a
               href={SITE.mapsDirectionsUrl}
               target="_blank"

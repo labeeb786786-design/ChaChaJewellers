@@ -1,12 +1,10 @@
 import { MapPin, Phone, Clock, Navigation } from "lucide-react";
 
-import { SITE, OPENING_HOURS } from "@/lib/site";
+import { SITE } from "@/lib/site";
 import { Button } from "@/components/ui/button";
+import { OpeningHours } from "@/components/home/opening-hours";
 
 export function StoreLocation() {
-  // Highlight "today" — mocked to a fixed day for the static preview.
-  const todayIndex = 0; // Monday (set for the client demo)
-
   return (
     <section className="bg-cream py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -78,27 +76,7 @@ export function StoreLocation() {
                 <Clock className="size-5 text-gold-deep" />
                 <p className="font-semibold text-foreground">Opening Hours</p>
               </div>
-              <ul className="divide-y divide-border/70 text-sm">
-                {OPENING_HOURS.map((row, i) => (
-                  <li
-                    key={row.day}
-                    className={
-                      "flex items-center justify-between py-2 " +
-                      (i === todayIndex ? "font-semibold text-maroon" : "text-muted-foreground")
-                    }
-                  >
-                    <span>
-                      {row.day}
-                      {i === todayIndex && (
-                        <span className="ml-2 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-gold-deep">
-                          Today
-                        </span>
-                      )}
-                    </span>
-                    <span>{row.hours}</span>
-                  </li>
-                ))}
-              </ul>
+              <OpeningHours />
             </div>
           </div>
         </div>

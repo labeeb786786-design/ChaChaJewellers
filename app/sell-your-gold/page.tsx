@@ -29,8 +29,8 @@ const FAQS: Faq[] = [
     a: "Your estimate is based on the weight and karat (purity) of your gold at the current market rate. It's an indicative figure — we'll confirm the exact amount in-store once our team has professionally weighed and tested it.",
   },
   {
-    q: "Do I need an appointment to sell my gold?",
-    a: "Not at all — you're welcome to walk in any day during our opening hours, 7 days a week from 11am to 7pm. If you'd prefer a set time, you're welcome to book an appointment and we'll be ready for you.",
+    q: "Can I just walk in to sell my gold?",
+    a: "Yes — pop in any day during our opening hours, 7 days a week, and we'll take care of it there and then. There's no need to arrange anything in advance.",
   },
   {
     q: "What should I bring with me to the store?",

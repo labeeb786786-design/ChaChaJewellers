@@ -60,7 +60,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-3">
             <Button asChild variant="gold" size="sm" className="hidden sm:inline-flex">
-              <Link href="/appointments">Book Appointment</Link>
+              <Link href="/contact">Contact us</Link>
             </Button>
             <button
               type="button"
@@ -93,8 +93,8 @@ export function Navbar() {
               </Link>
             ))}
             <Button asChild variant="gold" size="sm" className="mt-3 mb-2">
-              <Link href="/appointments" onClick={() => setOpen(false)}>
-                Book Appointment
+              <Link href="/contact" onClick={() => setOpen(false)}>
+                Contact us
               </Link>
             </Button>
           </div>

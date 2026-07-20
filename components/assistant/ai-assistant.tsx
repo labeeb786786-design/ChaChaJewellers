@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  * AI Jewellery Assistant — DEMO / scripted.
  * This is NOT a real LLM. It keyword-matches against a small script and can
  * navigate the user to the relevant page. For production this would be wired
- * to a real assistant (e.g. Claude) with tools for live prices & bookings.
+ * to a real assistant (e.g. Claude) with tools for live prices & enquiries.
  */
 
 type Msg = { role: "user" | "bot"; text: string; action?: () => void; actionLabel?: string };
@@ -22,7 +22,7 @@ const QUICK_PROMPTS = [
   "What's today's gold price?",
   "Can you resize rings?",
   "Show me bangles",
-  "Book an appointment",
+  "Contact us",
 ];
 
 function buildReply(
@@ -72,25 +72,25 @@ function buildReply(
   if (/(earring|jhumka|chandbali|stud)/.test(q)) {
     return { text: "From jhumkas to chandbalis and everyday studs — here are our earrings.", navigateTo: "/shop?category=earrings", actionLabel: "Browse Earrings →" };
   }
-  if (/(book|appointment|visit|consult|reserve)/.test(q)) {
+  if (/(contact|get in touch|reach|call|phone|whatsapp|message|email|visit|enquir)/.test(q)) {
     return {
-      text: "Happy to help — you can book a private appointment or bridal consultation with us. I'll take you to the booking page.",
-      navigateTo: "/appointments",
-      actionLabel: "Book Appointment →",
+      text: "Happy to help — you can reach us by phone, WhatsApp, Instagram or Facebook. I'll take you to our contact page.",
+      navigateTo: "/contact",
+      actionLabel: "Contact Us →",
     };
   }
   if (/(hour|open|time|when).*(open)|opening|what time/.test(q)) {
-    return { text: `We're open 7 days a week, 11am–7pm, at ${SITE.address.full}.`, navigateTo: "/contact", actionLabel: "Find Us →" };
+    return { text: `We're open 7 days a week, at ${SITE.address.full}.`, navigateTo: "/contact", actionLabel: "Find Us →" };
   }
   if (/(where|location|address|find|direction)/.test(q)) {
     return { text: `You'll find us at ${SITE.address.full}. Call ${SITE.phone} if you need directions.`, navigateTo: "/contact", actionLabel: "Get Directions →" };
   }
   if (/(hello|hi|hey|salaam|assalam)/.test(q)) {
-    return { text: "Assalamu alaikum and welcome to Chacha Jewellers! Ask me about our collections, today's gold price, selling gold, repairs or booking a visit." };
+    return { text: "Assalamu alaikum and welcome to Chacha Jewellers! Ask me about our collections, today's gold price, selling gold, repairs or how to contact us." };
   }
 
   return {
-    text: `I can help with our collections, today's gold price, selling gold, ring resizing & repairs, or booking a visit. You can also call us on ${SITE.phone}.`,
+    text: `I can help with our collections, today's gold price, selling gold, ring resizing & repairs, or how to get in touch. You can also call us on ${SITE.phone}.`,
   };
 }
 

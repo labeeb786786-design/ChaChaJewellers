@@ -2,7 +2,11 @@ import Link from "next/link";
 import { Phone, MapPin, Clock, Star } from "lucide-react";
 
 import { SITE, HEADER_LINKS } from "@/lib/site";
-import { InstagramIcon, FacebookIcon } from "@/components/icons/social";
+import {
+  InstagramIcon,
+  WhatsAppIcon,
+  FacebookIcon,
+} from "@/components/icons/social";
 
 export function Footer() {
   return (
@@ -36,6 +40,15 @@ export function Footer() {
               <InstagramIcon className="size-4" />
             </a>
             <a
+              href={SITE.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="flex size-9 items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-gold hover:text-gold"
+            >
+              <WhatsAppIcon className="size-4" />
+            </a>
+            <a
               href={SITE.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -65,10 +78,10 @@ export function Footer() {
             ))}
             <li>
               <Link
-                href="/appointments"
+                href="/contact"
                 className="text-cream/70 transition-colors hover:text-gold"
               >
-                Book an Appointment
+                Contact us
               </Link>
             </li>
           </ul>
