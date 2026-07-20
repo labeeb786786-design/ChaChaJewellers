@@ -1,15 +1,9 @@
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Clock4,
-  HandCoins,
-  HelpCircle,
-  ChevronRight,
-  Phone,
-} from "lucide-react";
+import { ShieldCheck, Clock4, HandCoins, HelpCircle, Phone } from "lucide-react";
 
 import { getGoldPrices } from "@/lib/gold";
 import { GoldCalculator } from "@/components/sell/gold-calculator";
+import { FaqAccordion, type Faq } from "@/components/faq/faq-accordion";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
@@ -24,13 +18,24 @@ const REASSURANCE = [
   { icon: HandCoins, text: "Fair rates you can rely on" },
 ];
 
-// FAQ teasers — every link points at the canonical /faq route so the future
-// FAQ page only needs to exist once and all mentions resolve to it.
-const FAQS = [
-  "What's the difference between selling scrap gold and gold bars?",
-  "How is my valuation worked out?",
-  "Do I need an appointment to sell my gold?",
-  "What should I bring with me to the store?",
+// Inline FAQs — answers expand right here on the page.
+const FAQS: Faq[] = [
+  {
+    q: "What's the difference between selling scrap gold and gold bars?",
+    a: "Scrap gold is any old, broken or unwanted jewellery, while gold bars are investment-grade bullion. We happily buy both — just pick the matching option in the estimator above so we can value it as accurately as possible.",
+  },
+  {
+    q: "How is my valuation worked out?",
+    a: "Your estimate is based on the weight and karat (purity) of your gold at the current market rate. It's an indicative figure — we'll confirm the exact amount in-store once our team has professionally weighed and tested it.",
+  },
+  {
+    q: "Do I need an appointment to sell my gold?",
+    a: "Not at all — you're welcome to walk in any day during our opening hours, 7 days a week from 11am to 7pm. If you'd prefer a set time, you're welcome to book an appointment and we'll be ready for you.",
+  },
+  {
+    q: "What should I bring with me to the store?",
+    a: "Just bring the gold you'd like to sell — there's no need to prepare anything. Photo ID may be requested for larger transactions, but we'll weigh and test everything for you, with no obligation to sell.",
+  },
 ];
 
 export default async function SellYourGoldPage() {
@@ -82,35 +87,25 @@ export default async function SellYourGoldPage() {
               </div>
             </div>
 
-            <ul className="mt-5 divide-y divide-border">
-              {FAQS.map((q) => (
-                <li key={q}>
-                  <Link
-                    href="/faq"
-                    className="group flex items-center justify-between gap-3 py-3 text-sm text-foreground/80 transition-colors hover:text-maroon"
-                  >
-                    <span>{q}</span>
-                    <ChevronRight className="size-4 shrink-0 text-gold-deep transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-5">
+              <FaqAccordion items={FAQS} />
+            </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/faq"
-                className="inline-flex items-center gap-2 rounded-full bg-charcoal px-5 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-charcoal-soft"
-              >
-                <HelpCircle className="size-4" />
-                Read our FAQs
-              </Link>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
               <a
                 href={SITE.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-5 py-2.5 text-sm font-semibold text-gold-deep transition-colors hover:bg-gold/10"
+                className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-gold/50 px-5 py-2.5 text-sm font-semibold text-gold-deep transition-colors hover:bg-gold/10"
               >
                 <Phone className="size-4" />
                 Call for support · {SITE.phone}
               </a>
+              <Link
+                href="/faq"
+                className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-charcoal px-5 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-charcoal-soft"
+              >
+                <HelpCircle className="size-4" />
+                More FAQs
+              </Link>
             </div>
           </div>
         </section>
