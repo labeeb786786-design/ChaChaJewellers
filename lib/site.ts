@@ -39,6 +39,7 @@ export type NavLink = { label: string; href: string };
 export const HEADER_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Shop", href: "/shop" },
+  { label: "Bullion", href: "/bullions" },
   { label: "Sell Your Gold", href: "/sell-your-gold" },
   { label: "Services", href: "/services" },
   { label: "Precious Metals", href: "/precious-metals" },

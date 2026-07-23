@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, MapPin, Clock, Star } from "lucide-react";
 
 import { SITE, HEADER_LINKS } from "@/lib/site";
+import { CATEGORIES } from "@/lib/catalog";
 import {
   InstagramIcon,
   WhatsAppIcon,
@@ -93,26 +94,16 @@ export function Footer() {
             Collections
           </h4>
           <ul className="space-y-2.5 text-sm">
-            <li>
-              <Link href="/shop?category=rings" className="text-cream/70 transition-colors hover:text-gold">
-                Rings
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop?category=bangles" className="text-cream/70 transition-colors hover:text-gold">
-                Bangles
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop?category=necklace-sets" className="text-cream/70 transition-colors hover:text-gold">
-                Necklace Sets
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop?category=earrings" className="text-cream/70 transition-colors hover:text-gold">
-                Earrings
-              </Link>
-            </li>
+            {CATEGORIES.map((c) => (
+              <li key={c.slug}>
+                <Link
+                  href={`/shop/category/${c.slug}`}
+                  className="text-cream/70 transition-colors hover:text-gold"
+                >
+                  {c.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

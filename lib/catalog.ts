@@ -40,6 +40,49 @@ export function getShopProductBySlug(slug: string): ShopProduct | undefined {
   return getShopProducts().find((p) => p.slug === slug);
 }
 
+/** Shop categories customers browse first. Each product's `category` matches a slug below. */
+export type Category = {
+  slug: string;
+  name: string;
+  tagline: string;
+  gradient: [string, string];
+};
+
+export const CATEGORIES: Category[] = [
+  {
+    slug: "rings",
+    name: "Rings",
+    tagline: "Everyday & occasion rings",
+    gradient: ["#7a1f2b", "#c9a227"],
+  },
+  {
+    slug: "bracelets",
+    name: "Bracelets",
+    tagline: "Delicate gold for the wrist",
+    gradient: ["#8a2b2b", "#e0b84c"],
+  },
+  {
+    slug: "studs-earrings",
+    name: "Studs & Earrings",
+    tagline: "Studs, jhumkas & drops",
+    gradient: ["#701c28", "#caa53d"],
+  },
+  {
+    slug: "necklaces",
+    name: "Necklaces",
+    tagline: "Chains & statement pieces",
+    gradient: ["#6b1f2a", "#b8860b"],
+  },
+];
+
+export function getCategory(slug: string): Category | undefined {
+  return CATEGORIES.find((c) => c.slug === slug);
+}
+
+export function getProductsByCategory(slug: string): ShopProduct[] {
+  return getShopProducts().filter((p) => p.category === slug);
+}
+
 /** Display label for price — a single value or a "from – to" range. */
 export function priceLabel(p: ShopProduct): string {
   return p.priceMaxGBP

@@ -1,18 +1,16 @@
 import { Phone } from "lucide-react";
 
-import { getShopProducts } from "@/lib/catalog";
-import { ProductCard } from "@/components/shop/product-card";
+import { CATEGORIES } from "@/lib/catalog";
+import { CategoryCard } from "@/components/shop/category-card";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
   title: "Shop the Collection",
   description:
-    "Browse fine South Asian gold jewellery from Chacha Jewellers — bangles, rings, necklace sets and earrings in 22k and 24k gold.",
+    "Browse fine South Asian gold jewellery from Chacha Jewellers by category — rings, bracelets, studs & earrings and necklaces in 22k and 24k gold.",
 };
 
 export default function ShopPage() {
-  const products = getShopProducts();
-
   return (
     <div className="bg-cream">
       {/* Header */}
@@ -22,12 +20,11 @@ export default function ShopPage() {
             Our Collection
           </p>
           <h1 className="font-serif text-4xl font-bold sm:text-5xl">
-            Shop Fine Gold
+            Shop by Category
           </h1>
           <p className="mt-4 max-w-2xl text-cream/70">
-            A handpicked selection of our finest South Asian gold jewellery, in
-            radiant 22k and 24k gold. Each piece is available to view and reserve
-            in-store — call us on{" "}
+            Choose a category to explore our fine South Asian gold. Every piece
+            is available to view and reserve in-store — call us on{" "}
             <a href={SITE.phoneHref} className="font-medium text-gold hover:underline">
               {SITE.phone}
             </a>{" "}
@@ -36,20 +33,11 @@ export default function ShopPage() {
         </div>
       </section>
 
-      {/* Grid */}
+      {/* Category grid */}
       <section className="mx-auto max-w-7xl px-6 py-14 lg:py-20">
-        <div className="mb-8 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {products.length} {products.length === 1 ? "piece" : "pieces"}
-          </p>
-          <p className="hidden text-sm text-muted-foreground sm:block">
-            Prices reflect current 24k / 22k gold weight &amp; craftsmanship.
-          </p>
-        </div>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product, i) => (
-            <ProductCard key={product.slug} product={product} priority={i < 3} />
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {CATEGORIES.map((category) => (
+            <CategoryCard key={category.slug} category={category} />
           ))}
         </div>
 

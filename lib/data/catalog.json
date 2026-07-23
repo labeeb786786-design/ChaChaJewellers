@@ -14,7 +14,7 @@
   {
     "slug": "necklace",
     "name": "Necklace",
-    "category": "necklace-sets",
+    "category": "necklaces",
     "image": "/products/necklace.png",
     "priceGBP": 7100,
     "weightGrams": 82.4,
@@ -40,7 +40,7 @@
   {
     "slug": "earrings",
     "name": "Earrings",
-    "category": "earrings",
+    "category": "studs-earrings",
     "image": "/products/earrings.png",
     "priceGBP": 820,
     "weightGrams": 9,

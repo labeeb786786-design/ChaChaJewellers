@@ -52,9 +52,9 @@ export function Hero() {
           </p>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-cream/70 sm:text-lg">
-            Oldham&rsquo;s home of fine South Asian gold — exquisite bridal sets,
-            bangles, rings and earrings in radiant 22k gold, crafted for the
-            moments you&rsquo;ll remember forever.
+            The North&rsquo;s home of fine South Asian gold — exquisite jewellery
+            in radiant 22k gold, custom jewellery crafted for the moments
+            you&rsquo;ll remember.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
