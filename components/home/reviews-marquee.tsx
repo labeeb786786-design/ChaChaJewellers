@@ -58,6 +58,11 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
+/**
+ * Reviews marquee — embeddable (no own <section>/background). Rendered inside
+ * the merged Trust section on a cream background. Keeps all behaviour: seamless
+ * looping (duplicated track), auto-scroll, pause-on-hover, real review data.
+ */
 export function ReviewsMarquee({ reviews }: { reviews: Review[] }) {
   if (reviews.length === 0) return null;
 
@@ -65,24 +70,12 @@ export function ReviewsMarquee({ reviews }: { reviews: Review[] }) {
   const track = [...reviews, ...reviews];
 
   return (
-    <section className="overflow-hidden bg-charcoal py-20 lg:py-24">
-      <div className="mx-auto mb-12 max-w-7xl px-6 text-center">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] text-gold">
-          Loved by our customers
-        </p>
-        <h2 className="font-serif text-3xl font-bold text-cream sm:text-4xl">
-          Rated 4.6★ across 138 reviews
-        </h2>
-        <p className="mt-3 text-cream/60">
-          A few kind words from the families we&rsquo;ve served in Oldham.
-        </p>
-      </div>
-
+    <div className="overflow-hidden">
       {/* marquee-paused wrapper pauses the animation on hover */}
       <div className="marquee-paused group relative">
-        {/* edge fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-charcoal to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-charcoal to-transparent" />
+        {/* edge fades (match the cream section background) */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-cream to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-cream to-transparent" />
 
         <div className="flex w-max animate-marquee gap-5 px-5">
           {track.map((review, i) => (
@@ -90,6 +83,6 @@ export function ReviewsMarquee({ reviews }: { reviews: Review[] }) {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

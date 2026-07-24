@@ -1,5 +1,9 @@
 import { ShieldCheck, Users, BadgePercent, Clock4 } from "lucide-react";
 
+import type { Review } from "@/lib/reviews";
+import { ReviewsMarquee } from "@/components/home/reviews-marquee";
+import { SITE } from "@/lib/site";
+
 const POINTS = [
   {
     icon: ShieldCheck,
@@ -23,7 +27,11 @@ const POINTS = [
   },
 ];
 
-export function WhyChooseUs() {
+/**
+ * Trust section — merges the "Why Choose Us" trust points with the customer
+ * reviews marquee into a single cream section (shared background/container).
+ */
+export function TrustSection({ reviews }: { reviews: Review[] }) {
   return (
     <section className="bg-cream py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -34,6 +42,13 @@ export function WhyChooseUs() {
           <h2 className="font-serif text-3xl font-bold text-foreground sm:text-4xl">
             A jeweller you can trust
           </h2>
+          <p className="mt-3 text-base font-medium text-foreground/70 sm:text-lg">
+            Rated{" "}
+            <span className="font-semibold text-gold-deep">
+              {SITE.rating.stars}★
+            </span>{" "}
+            across {SITE.rating.count} Google reviews
+          </p>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -54,6 +69,17 @@ export function WhyChooseUs() {
             </div>
           ))}
         </div>
+
+        {/* Transitional line into the reviews (small/light, not a heading) */}
+        <p className="mx-auto mt-12 max-w-2xl text-center text-base font-medium italic text-foreground/75 sm:text-lg">
+          Don&rsquo;t just take our word for it — here&rsquo;s what our customers
+          have to say.
+        </p>
+      </div>
+
+      {/* Reviews marquee — same section, flows directly beneath the line (no divider) */}
+      <div className="mt-8 lg:mt-10">
+        <ReviewsMarquee reviews={reviews} />
       </div>
     </section>
   );

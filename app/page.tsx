@@ -1,10 +1,10 @@
 import { Hero } from "@/components/home/hero";
-import { FeaturedCollections } from "@/components/home/featured-collections";
 import { GoldPriceWidget } from "@/components/home/gold-price-widget";
-import { WhyChooseUs } from "@/components/home/why-choose-us";
+import { FeaturedCollections } from "@/components/home/featured-collections";
+import { Bullions } from "@/components/home/bullions";
+import { TrustSection } from "@/components/home/trust-section";
 import { SellGoldPromo } from "@/components/home/sell-gold-promo";
 import { ServicesOverview } from "@/components/home/services-overview";
-import { ReviewsMarquee } from "@/components/home/reviews-marquee";
 import { StoreLocation } from "@/components/home/store-location";
 import { getReviews } from "@/lib/reviews";
 
@@ -14,12 +14,12 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <FeaturedCollections />
       <GoldPriceWidget />
-      <WhyChooseUs />
+      <FeaturedCollections />
+      <Bullions />
+      <TrustSection reviews={reviews} />
       <SellGoldPromo />
       <ServicesOverview />
-      <ReviewsMarquee reviews={reviews} />
       <StoreLocation />
     </>
   );

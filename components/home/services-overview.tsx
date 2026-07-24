@@ -5,17 +5,17 @@ import { HOME_SERVICES as SERVICES } from "@/lib/services";
 
 export function ServicesOverview() {
   return (
-    <section className="bg-cream-soft/50 py-20 lg:py-24">
+    <section className="bg-charcoal py-20 text-cream lg:py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] text-gold-deep">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] text-gold">
               In-House Services
             </p>
-            <h2 className="font-serif text-3xl font-bold text-foreground sm:text-4xl">
+            <h2 className="font-serif text-3xl font-bold text-cream sm:text-4xl">
               More than a jewellery shop
             </h2>
-            <p className="mt-3 text-muted-foreground">
+            <p className="mt-3 text-cream/70">
               From quick repairs to bespoke commissions, our workshop keeps your
               gold looking its best.
             </p>
@@ -29,7 +29,7 @@ export function ServicesOverview() {
               key={s.title}
               className="group flex gap-4 rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lg"
             >
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-maroon/8 text-maroon transition-colors group-hover:bg-maroon group-hover:text-cream">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold/15 text-gold-deep transition-colors group-hover:bg-gold group-hover:text-charcoal">
                 <s.icon className="size-6" />
               </div>
               <div>
@@ -52,7 +52,7 @@ function Button({ href }: { href: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-maroon transition-colors hover:text-gold-deep"
+      className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-gold transition-colors hover:text-gold-soft"
     >
       View all services
       <ArrowUpRight className="size-4" />

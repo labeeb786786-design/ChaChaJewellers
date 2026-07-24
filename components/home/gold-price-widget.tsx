@@ -55,7 +55,7 @@ function PriceTile({
 
 export function GoldPriceWidget() {
   return (
-    <section className="bg-charcoal py-20 lg:py-24">
+    <section className="bg-maroon py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
@@ -70,7 +70,7 @@ export function GoldPriceWidget() {
               market. Whether you&rsquo;re buying a bridal set or selling old
               gold, you&rsquo;ll always know where the market stands.
             </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-400">
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-gold/15 px-3 py-1.5 text-sm font-medium text-gold-soft">
               <TrendingUp className="size-4" />
               22k up {pctChange.toFixed(1)}% over 30 days
             </div>
@@ -85,7 +85,7 @@ export function GoldPriceWidget() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-cream/10 bg-charcoal-soft p-5 shadow-xl sm:p-6">
+          <div className="rounded-2xl border border-cream/10 bg-charcoal p-5 shadow-xl sm:p-6">
             <div className="mb-4 grid grid-cols-3 gap-3">
               <PriceTile label="Gold 22k" sub="per gram" value={goldData.current.gold22k} highlight />
               <PriceTile label="Gold 24k" sub="per gram" value={goldData.current.gold24k} />
