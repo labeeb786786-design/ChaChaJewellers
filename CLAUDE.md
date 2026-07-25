@@ -76,8 +76,8 @@ lib/
 Premium South Asian gold-jewellery brand — should feel **established, trustworthy
 and celebratory** (weddings/occasions), NOT a generic Western jewellery template.
 
-- **Palette:** warm **gold** (`#c9a227`), deep **charcoal/black**, deep **maroon**
-  (`#5c1a1a`), soft **cream** (`#faf6ee`). Available as Tailwind utilities:
+- **Palette:** warm **gold** (`#c9a227`), warm near-black **charcoal** (`#13110e`),
+  refined wine **maroon** (`#591826`), soft **cream** (`#faf6ee`). Available as Tailwind utilities:
   `bg-gold`, `text-maroon`, `bg-charcoal`, `bg-cream`, etc. (see `@theme` in globals.css).
 - **Type:** Playfair Display (serif) for headings via `--font-serif`; Inter (sans)
   for body via `--font-sans`. Both wired through `next/font` in `layout.tsx`.

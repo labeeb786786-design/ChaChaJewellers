@@ -6,6 +6,7 @@ import { Menu, X, Phone, Star } from "lucide-react";
 
 import { SITE, HEADER_LINKS } from "@/lib/site";
 import { Button } from "@/components/ui/button";
+import { BasketButton } from "@/components/basket/basket-button";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -58,10 +59,12 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <Button asChild variant="gold" size="sm" className="hidden sm:inline-flex">
               <Link href="/contact">Contact us</Link>
             </Button>
+            {/* Basket — far right, after Contact us */}
+            <BasketButton />
             <button
               type="button"
               aria-label="Toggle menu"

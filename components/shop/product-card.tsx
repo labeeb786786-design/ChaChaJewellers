@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Weight, Ruler, ArrowUpRight } from "lucide-react";
+import { Weight, Ruler } from "lucide-react";
 
 import type { ShopProduct } from "@/lib/catalog";
 import { priceLabel, weightLabel } from "@/lib/catalog";
 import { ProductImage } from "@/components/shop/product-image";
+import { AddToBasketButton } from "@/components/basket/add-to-basket-button";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({
@@ -17,10 +18,15 @@ export function ProductCard({
   compact?: boolean;
 }) {
   return (
-    <Link
-      href={`/shop/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-xl"
-    >
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-xl">
+      {/* Stretched link — makes the whole card navigate, while the Add button
+          (below, with its own stacking + pointer events) stays clickable. */}
+      <Link
+        href={`/shop/${product.slug}`}
+        className="absolute inset-0 z-10"
+        aria-label={`View ${product.name}`}
+      />
+
       {/* Image with zoom-on-hover (landscape on the homepage, portrait on Shop) */}
       <div
         className={cn(
@@ -49,8 +55,14 @@ export function ProductCard({
         )}
       </div>
 
-      {/* Details */}
-      <div className={cn("flex flex-1 flex-col", compact ? "p-3.5" : "p-5")}>
+      {/* Details — sit above the stretched link but pass clicks through, except
+          the interactive Add button which re-enables pointer events. */}
+      <div
+        className={cn(
+          "pointer-events-none relative z-20 flex flex-1 flex-col",
+          compact ? "p-3.5" : "p-5"
+        )}
+      >
         <h3
           className={cn(
             "font-serif font-semibold text-foreground",
@@ -90,8 +102,8 @@ export function ProductCard({
 
         <div
           className={cn(
-            "flex items-end justify-between border-t border-border/70",
-            compact ? "mt-3 pt-3" : "mt-4 pt-4"
+            "mt-auto border-t border-border/70",
+            compact ? "pt-3" : "pt-4"
           )}
         >
           <div>
@@ -107,17 +119,11 @@ export function ProductCard({
               {priceLabel(product)}
             </p>
           </div>
-          <span
-            className={cn(
-              "inline-flex items-center gap-1 font-semibold text-gold-deep transition-colors group-hover:text-maroon",
-              compact ? "text-xs" : "text-sm"
-            )}
-          >
-            View
-            <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </span>
+          <div className="pointer-events-auto mt-3">
+            <AddToBasketButton product={product} stopNavigation fullWidth />
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

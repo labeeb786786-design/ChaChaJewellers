@@ -104,7 +104,7 @@ export function GoldPriceWidget() {
                   <YAxis domain={["dataMin - 1", "dataMax + 1"]} hide />
                   <Tooltip
                     contentStyle={{
-                      background: "#0d0d0f",
+                      background: "#13110e",
                       border: "1px solid rgba(201,162,39,0.4)",
                       borderRadius: 8,
                       color: "#faf6ee",

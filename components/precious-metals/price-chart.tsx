@@ -88,7 +88,7 @@ export function PriceChart({ data }: { data: GoldPriceData }) {
             />
             <Tooltip
               contentStyle={{
-                background: "#0d0d0f",
+                background: "#13110e",
                 border: "1px solid rgba(201,162,39,0.4)",
                 borderRadius: 8,
                 color: "#faf6ee",

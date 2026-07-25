@@ -1,5 +1,5 @@
 import { Hero } from "@/components/home/hero";
-import { GoldPriceWidget } from "@/components/home/gold-price-widget";
+import { StoreGallery } from "@/components/home/store-gallery";
 import { FeaturedCollections } from "@/components/home/featured-collections";
 import { Bullions } from "@/components/home/bullions";
 import { TrustSection } from "@/components/home/trust-section";
@@ -14,12 +14,12 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <GoldPriceWidget />
       <FeaturedCollections />
       <Bullions />
       <TrustSection reviews={reviews} />
       <SellGoldPromo />
       <ServicesOverview />
+      <StoreGallery />
       <StoreLocation />
     </>
   );

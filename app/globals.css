@@ -14,10 +14,10 @@
   --color-gold: #c9a227;
   --color-gold-soft: #e2c565;
   --color-gold-deep: #a67c1a;
-  --color-charcoal: #0d0d0f;
-  --color-charcoal-soft: #161418;
-  --color-maroon: #5c1a1a;
-  --color-maroon-deep: #3d0f0f;
+  --color-charcoal: #13110e;      /* warm near-black — velvet, not cool tech-black */
+  --color-charcoal-soft: #1d1a15; /* warm raised surface for dark cards */
+  --color-maroon: #591826;        /* refined wine/oxblood (was brick-red) */
+  --color-maroon-deep: #3a0f19;
   --color-cream: #faf6ee;
   --color-cream-soft: #f2ebdd;
 
@@ -63,12 +63,12 @@
   --popover-foreground: #1c1713;
   --primary: #a67c1a;            /* deep gold */
   --primary-foreground: #fdfbf5;
-  --secondary: #5c1a1a;          /* maroon */
+  --secondary: #591826;          /* maroon (refined wine/oxblood) */
   --secondary-foreground: #faf6ee;
   --muted: #f2ebdd;
   --muted-foreground: #6b5f4f;
   --accent: #f2ebdd;
-  --accent-foreground: #5c1a1a;
+  --accent-foreground: #591826;
   --destructive: #b3261e;
   --border: #e6dcc7;
   --input: #e6dcc7;
@@ -111,7 +111,7 @@
 .hero-vignette {
   background:
     radial-gradient(120% 80% at 50% 0%, rgba(201, 162, 39, 0.14) 0%, transparent 55%),
-    linear-gradient(180deg, #0d0d0f 0%, #161418 100%);
+    linear-gradient(180deg, #13110e 0%, #1d1a15 100%);
 }
 
 /*

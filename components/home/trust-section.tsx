@@ -33,16 +33,16 @@ const POINTS = [
  */
 export function TrustSection({ reviews }: { reviews: Review[] }) {
   return (
-    <section className="bg-cream py-20 lg:py-24">
+    <section className="bg-cream py-8 lg:py-10">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.22em] text-gold-deep">
+        <div className="mx-auto mb-6 max-w-2xl text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-gold-deep">
             Why Chacha Jewellers
           </p>
-          <h2 className="font-serif text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="font-serif text-2xl font-bold text-foreground sm:text-3xl">
             A jeweller you can trust
           </h2>
-          <p className="mt-3 text-base font-medium text-foreground/70 sm:text-lg">
+          <p className="mt-2 text-sm font-medium text-foreground/70 sm:text-base">
             Rated{" "}
             <span className="font-semibold text-gold-deep">
               {SITE.rating.stars}★
@@ -51,19 +51,19 @@ export function TrustSection({ reviews }: { reviews: Review[] }) {
           </p>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {POINTS.map((p) => (
             <div
               key={p.title}
-              className="group rounded-2xl border border-border bg-card p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lg"
+              className="group rounded-2xl border border-border bg-card p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lg"
             >
-              <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-gold/15 to-gold/5 text-gold-deep transition-colors group-hover:from-gold/25">
-                <p.icon className="size-7" />
+              <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-gold/15 to-gold/5 text-gold-deep transition-colors group-hover:from-gold/25">
+                <p.icon className="size-6" />
               </div>
-              <h3 className="font-serif text-lg font-semibold text-foreground">
+              <h3 className="font-serif text-base font-semibold text-foreground">
                 {p.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {p.body}
               </p>
             </div>
@@ -71,14 +71,14 @@ export function TrustSection({ reviews }: { reviews: Review[] }) {
         </div>
 
         {/* Transitional line into the reviews (small/light, not a heading) */}
-        <p className="mx-auto mt-12 max-w-2xl text-center text-base font-medium italic text-foreground/75 sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-center text-sm font-medium italic text-foreground/75 sm:text-base">
           Don&rsquo;t just take our word for it — here&rsquo;s what our customers
           have to say.
         </p>
       </div>
 
       {/* Reviews marquee — same section, flows directly beneath the line (no divider) */}
-      <div className="mt-8 lg:mt-10">
+      <div className="mt-6 lg:mt-8">
         <ReviewsMarquee reviews={reviews} />
       </div>
     </section>

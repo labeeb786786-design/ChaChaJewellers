@@ -9,7 +9,7 @@ import {
   FacebookIcon,
 } from "@/components/icons/social";
 import { StoreBackdrop } from "@/components/home/store-backdrop";
-import { StoreCarousel } from "@/components/home/store-carousel";
+import { HeroPriceWidget } from "@/components/home/hero-price-widget";
 
 const ASSURANCES = [
   { icon: ShieldCheck, label: "Guaranteed Purity" },
@@ -103,9 +103,9 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Hero visual — scrollable carousel of real store photos */}
-        <div className="relative z-10">
-          <StoreCarousel />
+        {/* Hero visual — compact live market widget */}
+        <div className="relative z-10 flex justify-center lg:justify-end">
+          <HeroPriceWidget />
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import {
   weightLabel,
 } from "@/lib/catalog";
 import { ProductImage } from "@/components/shop/product-image";
+import { ProductPurchase } from "@/components/shop/product-purchase";
 import { SITE } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -111,6 +112,9 @@ export default async function ProductPage({
                 </div>
               ))}
             </dl>
+
+            {/* Add to basket + quantity */}
+            <ProductPurchase product={product} />
 
             {/* Enquire */}
             <div className="mt-7 rounded-2xl border border-gold/30 bg-gold/5 p-5">

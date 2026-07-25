@@ -5,6 +5,8 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { AiAssistant } from "@/components/assistant/ai-assistant";
+import { BasketProvider } from "@/components/basket/basket-provider";
+import { BasketPanel } from "@/components/basket/basket-panel";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -47,10 +49,13 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <AiAssistant />
+        <BasketProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <AiAssistant />
+          <BasketPanel />
+        </BasketProvider>
       </body>
     </html>
   );

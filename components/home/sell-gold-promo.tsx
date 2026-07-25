@@ -29,37 +29,37 @@ const REASONS = [
 
 export function SellGoldPromo() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-maroon-deep via-maroon to-maroon-deep py-20 text-cream lg:py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-charcoal via-charcoal-soft to-charcoal py-8 text-cream lg:py-10">
       <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full border border-gold/15" />
       <div className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full border border-gold/10" />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 lg:grid-cols-2">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-gold/15 px-3.5 py-1.5 text-sm font-medium text-gold-soft">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gold/15 px-3.5 py-1.5 text-sm font-medium text-gold-soft">
             <Coins className="size-4" />
             Turn old gold into cash today
           </div>
-          <h2 className="font-serif text-3xl font-bold sm:text-4xl">
+          <h2 className="font-serif text-2xl font-bold sm:text-3xl">
             Sell Your Gold Today
           </h2>
-          <p className="mt-4 max-w-lg text-cream/80">
+          <p className="mt-3 max-w-lg text-sm text-cream/80 sm:text-base">
             Unworn bangles, broken chains, single earrings or old coins — bring
             them in and walk away with a fair price the same day. Our valuations
             are honest, transparent and always without obligation.
           </p>
 
-          <div className="mt-8">
+          <div className="mt-6">
             <Button asChild variant="gold" size="lg">
               <Link href="/sell-your-gold">Get a Free Valuation</Link>
             </Button>
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-md rounded-2xl border border-gold/25 bg-charcoal/40 p-6 backdrop-blur sm:p-7">
+        <div className="mx-auto w-full max-w-md rounded-2xl border border-gold/25 bg-white/[0.04] p-5 backdrop-blur sm:p-6">
           <p className="text-sm font-medium uppercase tracking-wide text-gold-soft">
             Why sell your gold with us
           </p>
-          <ul className="mt-5 space-y-4">
+          <ul className="mt-4 space-y-3.5">
             {REASONS.map((r) => (
               <li key={r.title} className="flex items-start gap-3.5">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-gold">
