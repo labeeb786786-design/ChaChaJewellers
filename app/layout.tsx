@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s · Chacha Jewellers",
   },
   description:
-    "Family-run South Asian gold jewellery specialist in Oldham. Bridal sets, bangles, rings and earrings in 22k gold, plus trusted gold buying and valuations. Rated 4.6★ by 138 reviews.",
+    "Family-run South Asian gold jewellery specialist in Oldham, established 1997. Bridal sets, bangles, rings and earrings in 22k gold, plus trusted gold buying and valuations. Rated 4.6★ by 138 reviews.",
   keywords: [
     "gold jewellery Oldham",
     "Asian gold Oldham",

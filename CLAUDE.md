@@ -8,6 +8,7 @@ and navigation over backend robustness.
 ## Business facts (real — use these, don't invent alternatives)
 
 - **Name:** Chacha Jewellers
+- **Founded:** 1997
 - **Address:** 94-96 Waterloo St, Oldham, OL4 1EQ
 - **Phone:** 0161 633 1340
 - **Hours:** Open 7 days a week, 11am–7pm
@@ -17,9 +18,10 @@ and navigation over backend robustness.
   rings, necklace sets, earrings; plus gold buying / valuations. Bespoke
   commissions are real (confirmed by a customer review).
 
-⚠️ **Do not invent** specific certifications, a founding year, or extra reviews
-beyond what the client provides. Keep such claims generic where unconfirmed.
-Single source of truth for business info: [`lib/site.ts`](lib/site.ts).
+⚠️ **Do not invent** specific certifications or extra reviews beyond what the
+client provides. Keep such claims generic where unconfirmed.
+Single source of truth for business info: [`lib/site.ts`](lib/site.ts)
+(`SITE.foundedYear`).
 
 ## Stack
 

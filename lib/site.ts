@@ -5,6 +5,7 @@
 export const SITE = {
   name: "Chacha Jewellers",
   tagline: "South Asian Gold Jewellery — Oldham",
+  foundedYear: 1997,
   phone: "0161 633 1340",
   phoneHref: "tel:+441616331340",
   address: {

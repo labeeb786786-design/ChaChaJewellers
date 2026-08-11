@@ -13,7 +13,7 @@ const POINTS = [
   {
     icon: Users,
     title: "Family-Run Trust",
-    body: "A local, family-run jeweller serving Oldham's community — the kind of personal service you only get from people who know their craft.",
+    body: `A local, family-run jeweller serving Oldham's community since ${SITE.foundedYear} — the kind of personal service you only get from people who know their craft.`,
   },
   {
     icon: BadgePercent,

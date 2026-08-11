@@ -42,6 +42,10 @@ export function Hero() {
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3.5 py-1.5 text-xs font-medium text-gold-soft">
             <Star className="size-3.5 fill-gold text-gold" />
             {SITE.rating.stars}★ · {SITE.rating.count} Google reviews
+            <span aria-hidden="true" className="text-gold-soft/40">
+              ·
+            </span>
+            Est. {SITE.foundedYear}
           </div>
 
           <h1 className="font-serif text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">

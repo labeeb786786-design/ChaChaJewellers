@@ -19,9 +19,9 @@ export function Footer() {
             Chacha Jewellers
           </span>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-cream/60">
-            A family-run home of South Asian gold jewellery in Oldham — bridal
-            sets, bangles, rings and everyday gold, alongside trusted gold-buying
-            and valuations.
+            A family-run home of South Asian gold jewellery in Oldham since{" "}
+            {SITE.foundedYear} — bridal sets, bangles, rings and everyday gold,
+            alongside trusted gold-buying and valuations.
           </p>
           <div className="mt-4 flex items-center gap-1.5 text-sm">
             <Star className="size-4 fill-gold text-gold" />
@@ -134,7 +134,8 @@ export function Footer() {
       <div className="border-t border-cream/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs text-cream/50 sm:flex-row">
           <p>
-            © {2026} Chacha Jewellers. All rights reserved.
+            © {2026} Chacha Jewellers. Est. {SITE.foundedYear}. All rights
+            reserved.
           </p>
           <p>
             {SITE.instagram.handle} · {SITE.instagram.followers} followers

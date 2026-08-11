@@ -43,7 +43,7 @@ export function Navbar() {
               Chacha Jewellers
             </span>
             <span className="text-[10px] uppercase tracking-[0.25em] text-gold-deep">
-              Est. Oldham · Fine Gold
+              Est. {SITE.foundedYear} · Oldham
             </span>
           </Link>
 
