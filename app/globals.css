@@ -25,6 +25,37 @@
   --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
+  /*
+    Admin panel palette (docs/claude-code-admin-prompt.md section 5).
+    Prefixed admin-* — deliberately distinct from the public brand tokens
+    above (e.g. admin-gold #8A6A1F is not the same colour as gold #c9a227).
+    Use as bg-admin-paper, text-admin-ink, border-admin-rule, etc. — never an
+    arbitrary hex inline in admin markup.
+  */
+  --color-admin-paper: #faf9f6;
+  --color-admin-surface: #ffffff;
+  --color-admin-ink: #1a1917;
+  --color-admin-muted: #6e6a62;
+  --color-admin-faint: #9c978d;
+  --color-admin-rule: #e4e1d8;
+  --color-admin-rule-strong: #cfcbbf;
+  --color-admin-gold: #8a6a1f;
+  --color-admin-gold-soft: #f4eedd;
+  --color-admin-danger: #9b2c2c;
+  --color-admin-danger-soft: #fbeded;
+  --color-admin-warn: #96601a;
+  --color-admin-warn-soft: #fdf3e4;
+  --color-admin-ok: #2f6b45;
+  --color-admin-ok-soft: #edf5ef;
+
+  /* Admin uses Inter for the interface (--font-sans, above) and IBM Plex
+     Mono for every number, SKU, code and the price breakdown. */
+  --font-admin-mono: var(--font-ibm-plex-mono, ui-monospace, "SFMono-Regular", monospace);
+
+  /* Radius 6px on controls, 8px on cards (brief section 5). */
+  --radius-admin-control: 6px;
+  --radius-admin-card: 8px;
+
   /* shadcn/ui semantic tokens mapped to the brand */
   --color-background: var(--background);
   --color-foreground: var(--foreground);

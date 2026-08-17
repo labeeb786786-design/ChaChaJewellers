@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { AiAssistant } from "@/components/assistant/ai-assistant";
-import { BasketProvider } from "@/components/basket/basket-provider";
-import { BasketPanel } from "@/components/basket/basket-panel";
+import { SiteChrome } from "@/components/layout/site-chrome";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -49,13 +45,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background">
-        <BasketProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <AiAssistant />
-          <BasketPanel />
-        </BasketProvider>
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
