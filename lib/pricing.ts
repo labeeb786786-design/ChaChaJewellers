@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { BandAppliesToEnum, Database, PricingModeEnum } from "@/types/db";
+import { metalRateSourceSchema, type MetalRateSource } from "@/lib/schemas/pricing";
+import type { BandAppliesToEnum, Database, MetalEnum, PricingModeEnum } from "@/types/db";
 
 export type PricingBand = Database["public"]["Tables"]["pricing_bands"]["Row"];
 
@@ -55,6 +56,113 @@ export async function calculatePrice(
   }
 
   return data;
+}
+
+/**
+ * The latest applied gold rate, resolved the same way the
+ * current_metal_prices view does (succeeded, applied, most recent) — but
+ * read from gold_price_log directly so the id comes with it. Returns null
+ * when the log is empty or has no applied row yet; that's the same "no
+ * rate" state either way, never a row of nulls to confuse with a real one.
+ */
+export async function getLatestMetalRate(
+  supabase: SupabaseClient<Database>,
+): Promise<MetalRateSource | null> {
+  const { data, error } = await supabase
+    .from("gold_price_log")
+    .select("id, gold_per_gram_24k_pence, silver_per_gram_999_pence")
+    .eq("succeeded", true)
+    .not("applied_at", "is", null)
+    .order("fetched_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Could not read the gold rate: ${error.message}`);
+  }
+  if (!data) return null;
+
+  return metalRateSourceSchema.parse(data);
+}
+
+export type CalculatedProductPrice = {
+  pricePence: number;
+  priceCalculatedAt: string;
+  priceSourceLogId: string;
+};
+
+/**
+ * What a dynamic-mode product should sell for right now, computed via
+ * calculate_dynamic_price_pence() — never reimplemented here. Returns null
+ * whenever there's nothing to calculate against yet: fixed pricing (the
+ * admin's typed price is authoritative, nothing to compute), no weight, no
+ * rate recorded for the product's metal, or no band covering the weight.
+ * A null result doesn't distinguish "can't compute" from "computes to
+ * zero-markup" — a band with 0% markup still produces a real (if bad)
+ * price here; canPublish() is what blocks publishing on that, not this.
+ */
+export async function calculateProductPrice(
+  supabase: SupabaseClient<Database>,
+  product: { pricingMode: PricingModeEnum; weightGrams: number | null; metal: MetalEnum },
+): Promise<CalculatedProductPrice | null> {
+  const appliesTo = appliesToForMode(product.pricingMode);
+  if (!appliesTo || product.weightGrams === null) return null;
+
+  const rateSource = await getLatestMetalRate(supabase);
+  if (!rateSource) return null;
+
+  const rate =
+    product.metal === "gold" ? rateSource.gold_per_gram_24k_pence : rateSource.silver_per_gram_999_pence;
+  if (rate === null) return null;
+
+  const band = await findBand(supabase, appliesTo, product.weightGrams);
+  if (!band) return null;
+
+  const pricePence = await calculatePrice(supabase, appliesTo, product.weightGrams, rate);
+  if (pricePence === null) return null;
+
+  return { pricePence, priceCalculatedAt: new Date().toISOString(), priceSourceLogId: rateSource.id };
+}
+
+export type PriceWriteFields = {
+  price_pence: number | null;
+  price_calculated_at: string | null;
+  price_source_log_id: string | null;
+};
+
+/**
+ * What to write for price_pence / price_calculated_at / price_source_log_id
+ * on every create or update — always recomputed fresh, never left stale.
+ * Fixed mode keeps the admin's typed price (already in fixedPricePence) and
+ * clears the live-rate metadata, since a fixed price doesn't track a rate.
+ * Dynamic mode that can't currently be calculated (no rate yet, no band for
+ * the weight) writes null rather than leaving a previous, possibly-wrong
+ * value in place — a stale price is the same kind of failure as a silent
+ * zero markup.
+ */
+export async function resolvePriceWriteFields(
+  supabase: SupabaseClient<Database>,
+  product: {
+    pricingMode: PricingModeEnum;
+    weightGrams: number | null;
+    metal: MetalEnum;
+    fixedPricePence: number | null;
+  },
+): Promise<PriceWriteFields> {
+  if (product.pricingMode === "fixed") {
+    return { price_pence: product.fixedPricePence, price_calculated_at: null, price_source_log_id: null };
+  }
+
+  const calculated = await calculateProductPrice(supabase, product);
+  if (!calculated) {
+    return { price_pence: null, price_calculated_at: null, price_source_log_id: null };
+  }
+
+  return {
+    price_pence: calculated.pricePence,
+    price_calculated_at: calculated.priceCalculatedAt,
+    price_source_log_id: calculated.priceSourceLogId,
+  };
 }
 
 /**

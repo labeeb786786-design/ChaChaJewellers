@@ -8,6 +8,9 @@ import { z } from "zod";
  */
 
 export const pricingModeSchema = z.enum(["dynamic_jewellery", "dynamic_bullion", "fixed"]);
+export const metalSchema = z.enum(["gold", "silver"]);
+export const puritySchema = z.enum(["24k", "22k", "21k", "18k", "9k", "999", "925"]);
+export const productTypeSchema = z.enum(["in_stock", "made_to_order"]);
 
 /** One row of the admin product list — id, sku, name plus what the table shows. */
 export const productListRowSchema = z.object({
@@ -30,3 +33,27 @@ export const productWeightRowSchema = z.object({
   weight_grams: z.coerce.number().nullable(),
 });
 export type ProductWeightRow = z.infer<typeof productWeightRowSchema>;
+
+/** A full product row, for the edit form to seed its initial values from. */
+export const productDetailSchema = z.object({
+  id: z.string(),
+  sku: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  short_description: z.string().nullable(),
+  description: z.string().nullable(),
+  category_id: z.string(),
+  product_type: productTypeSchema,
+  pricing_mode: pricingModeSchema,
+  metal: metalSchema,
+  purity: puritySchema,
+  weight_grams: z.coerce.number().nullable(),
+  price_pence: z.number().nullable(),
+  stock_quantity: z.number(),
+  lead_time_days: z.number().nullable(),
+  is_active: z.boolean(),
+  is_featured: z.boolean(),
+  sort_order: z.number(),
+  tags: z.array(z.string()),
+});
+export type ProductDetail = z.infer<typeof productDetailSchema>;

@@ -50,8 +50,12 @@ export default async function AdminProductsPage({
 
   const [categoriesResult, totalCountResult, liveCountResult] = await Promise.all([
     supabase.from("categories").select("id, name").eq("is_active", true).order("sort_order"),
-    supabase.from("products").select("id", { count: "exact", head: true }),
-    supabase.from("products").select("id", { count: "exact", head: true }).eq("is_active", true),
+    supabase.from("products").select("id", { count: "exact", head: true }).is("removed_at", null),
+    supabase
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("is_active", true)
+      .is("removed_at", null),
   ]);
   if (categoriesResult.error) {
     throw new Error(`Could not load categories: ${categoriesResult.error.message}`);
@@ -69,6 +73,7 @@ export default async function AdminProductsPage({
       { count: "exact" },
     )
     .eq("product_images.is_primary", true)
+    .is("removed_at", null)
     .order("created_at", { ascending: false });
 
   if (q) {
@@ -100,7 +105,8 @@ export default async function AdminProductsPage({
     .from("products")
     .select("id, pricing_mode, weight_grams")
     .neq("pricing_mode", "fixed")
-    .not("weight_grams", "is", null);
+    .not("weight_grams", "is", null)
+    .is("removed_at", null);
   if (weightError) {
     throw new Error(`Could not check pricing bands: ${weightError.message}`);
   }
@@ -146,13 +152,12 @@ export default async function AdminProductsPage({
             {totalCount} product{totalCount === 1 ? "" : "s"} · {liveProductCount} live on the site
           </p>
         </div>
-        <button
-          type="button"
-          disabled
-          className="rounded-admin-control bg-admin-ink px-3.5 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-admin-rule-strong"
+        <Link
+          href="/admin/products/new"
+          className="rounded-admin-control bg-admin-ink px-3.5 py-2 text-sm font-medium text-white hover:bg-[#33312c]"
         >
           Add product
-        </button>
+        </Link>
       </div>
 
       <BlockedBanner count={blockedIds.size} />

@@ -1,9 +1,10 @@
 /**
- * Hand-written from supabase/migrations/20260812144453_remote_schema.sql
- * (the `supabase` CLI isn't authenticated in this environment, so `supabase
- * gen types` can't run — see docs/claude-code-admin-prompt.md section 3).
- * Regenerate with `supabase gen types typescript --linked` once the CLI is
- * logged in; the shape here should match exactly.
+ * Hand-written from supabase/migrations/*.sql. The `supabase` CLI is
+ * authenticated in this environment as of 2026-08-19 (an earlier version of
+ * this comment assumed otherwise), so `supabase gen types typescript
+ * --linked` can now run for real — worth doing once the pending
+ * set_primary_product_image migration is pushed, so the generated file
+ * doesn't miss it. Until then, keep this hand-written copy in sync by hand.
  *
  * Postgres `numeric` columns come back from supabase-js as strings, not
  * numbers — those fields are typed `string` below, not `number`.
@@ -379,6 +380,7 @@ export interface Database {
           meta_description: string | null;
           created_at: string;
           updated_at: string;
+          removed_at: string | null;
           search_vector: string;
         };
         Insert: {
@@ -407,6 +409,7 @@ export interface Database {
           meta_description?: string | null;
           created_at?: string;
           updated_at?: string;
+          removed_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
         Relationships: [
@@ -553,6 +556,14 @@ export interface Database {
       apply_metal_prices: {
         Args: { p_log_id: string };
         Returns: { updated_count: number; skipped_count: number }[];
+      };
+      set_primary_product_image: {
+        Args: { p_product_id: string; p_image_id: string };
+        Returns: undefined;
+      };
+      cleanup_abandoned_draft_products: {
+        Args: Record<string, never>;
+        Returns: { deleted_product_id: string; storage_path: string | null }[];
       };
     };
     Enums: {

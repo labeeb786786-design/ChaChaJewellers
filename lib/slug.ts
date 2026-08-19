@@ -25,6 +25,16 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/**
+ * A live preview of the SKU a product's name would generate — shown as a
+ * hint while typing, same spirit as the slug preview. Like the slug, the
+ * real value is only finalised (and checked for collisions) server-side.
+ */
+export function suggestSku(name: string): string {
+  const letters = slugify(name).replace(/-/g, "").toUpperCase().slice(0, 8);
+  return letters ? `CJ-${letters}` : "";
+}
+
 async function slugExists(
   supabase: SupabaseClient<Database>,
   table: SluggableTable,
@@ -61,6 +71,36 @@ export async function generateSlug(
   let candidate = base;
   let counter = 2;
   while (await slugExists(supabase, table, candidate)) {
+    candidate = `${base}-${counter}`;
+    counter += 1;
+  }
+
+  return candidate;
+}
+
+async function skuExists(supabase: SupabaseClient<Database>, sku: string): Promise<boolean> {
+  const { data, error } = await supabase.from("products").select("id").eq("sku", sku).limit(1);
+
+  if (error) {
+    throw new Error(`Could not check product codes: ${error.message}`);
+  }
+
+  return (data?.length ?? 0) > 0;
+}
+
+/**
+ * Builds a unique SKU from `name`, same collision pattern as generateSlug —
+ * appending -2, -3, ... until it's free. Used when a product row is created
+ * before the admin has necessarily settled on a final name (e.g. the draft
+ * row an image upload creates); the real save can still leave this as-is or
+ * regenerate it once the name is final.
+ */
+export async function generateSku(name: string, supabase: SupabaseClient<Database>): Promise<string> {
+  const base = suggestSku(name) || "CJ-ITEM";
+
+  let candidate = base;
+  let counter = 2;
+  while (await skuExists(supabase, candidate)) {
     candidate = `${base}-${counter}`;
     counter += 1;
   }

@@ -2,6 +2,8 @@ import { Gem } from "lucide-react";
 import Link from "next/link";
 
 import { formatMoney } from "@/lib/money";
+import { DuplicateProductButton } from "./duplicate-button";
+import { RemoveProductDialog } from "./remove-dialog";
 
 export type DisplayProduct = {
   id: string;
@@ -137,20 +139,14 @@ export function ProductTable({
                 </td>
                 <td className="px-3.5 py-3">
                   <div className="flex justify-end gap-1.5">
-                    <button
-                      type="button"
-                      disabled
-                      className="rounded-admin-control border border-admin-rule-strong bg-admin-surface px-2.5 py-1.25 text-xs font-medium text-admin-ink disabled:cursor-not-allowed disabled:opacity-50"
+                    <Link
+                      href={`/admin/products/${product.id}/edit`}
+                      className="rounded-admin-control border border-admin-rule-strong bg-admin-surface px-2.5 py-1.25 text-xs font-medium text-admin-ink hover:bg-[#f5f3ee]"
                     >
                       Edit
-                    </button>
-                    <button
-                      type="button"
-                      disabled
-                      className="rounded-admin-control border border-[#e8cfcf] bg-admin-surface px-2.5 py-1.25 text-xs font-medium text-admin-danger disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Remove
-                    </button>
+                    </Link>
+                    <DuplicateProductButton productId={product.id} />
+                    <RemoveProductDialog productId={product.id} productName={product.name} />
                   </div>
                 </td>
               </tr>

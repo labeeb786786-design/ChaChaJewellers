@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/db";
-import { generateSlug, slugify, type SluggableTable } from "./slug";
+import { generateSku, generateSlug, slugify, suggestSku, type SluggableTable } from "./slug";
 
 describe("slugify", () => {
   it("lowercases and hyphenates spaces", () => {
@@ -98,5 +98,60 @@ describe("generateSlug", () => {
   it("rejects a name with nothing sluggable in it", async () => {
     const supabase = fakeSupabase({ products: [] });
     await expect(generateSlug("!!!", supabase, "products")).rejects.toThrow();
+  });
+});
+
+describe("suggestSku", () => {
+  it("uppercases the slugified name behind a CJ- prefix", () => {
+    expect(suggestSku("Gold Bangle")).toBe("CJ-GOLDBANG");
+  });
+
+  it("returns an empty string for a name with nothing sluggable in it", () => {
+    expect(suggestSku("!!!")).toBe("");
+  });
+});
+
+/** Same shape as fakeSupabase above, but keyed on the `sku` column, single table. */
+function fakeSupabaseForSku(existingSkus: string[]): SupabaseClient<Database> {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    from(_table: string) {
+      return {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        select(_columns: string) {
+          return {
+            eq(_column: string, value: string) {
+              return {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                limit(_n: number) {
+                  return Promise.resolve({
+                    data: existingSkus.includes(value) ? [{ id: "row-id" }] : [],
+                    error: null,
+                  });
+                },
+              };
+            },
+          };
+        },
+      };
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
+}
+
+describe("generateSku", () => {
+  it("returns the plain suggestion when it's free", async () => {
+    const supabase = fakeSupabaseForSku([]);
+    expect(await generateSku("Gold Bangle", supabase)).toBe("CJ-GOLDBANG");
+  });
+
+  it("appends -2 on a single collision", async () => {
+    const supabase = fakeSupabaseForSku(["CJ-GOLDBANG"]);
+    expect(await generateSku("Gold Bangle", supabase)).toBe("CJ-GOLDBANG-2");
+  });
+
+  it("falls back to CJ-ITEM for a name with nothing sluggable in it", async () => {
+    const supabase = fakeSupabaseForSku([]);
+    expect(await generateSku("!!!", supabase)).toBe("CJ-ITEM");
   });
 });

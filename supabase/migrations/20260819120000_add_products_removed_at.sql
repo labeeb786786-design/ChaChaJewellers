@@ -1,0 +1,11 @@
+-- Distinguishes a permanently "removed" product from an ordinary
+-- is_active = false draft still being worked on. Without this, Remove
+-- (addendum: "disappears from the admin panel permanently. No filter, no
+-- restore, nothing to find.") would be indistinguishable from Save as
+-- draft, and a removed product would keep showing up under the Draft
+-- filter — the row is still kept (order_items and price_locks hold
+-- foreign keys to it), it just needs its own marker.
+--
+-- Nullable, no default: null means never removed. Every admin list/detail
+-- query must filter `where removed_at is null`.
+ALTER TABLE "public"."products" ADD COLUMN "removed_at" timestamptz;
