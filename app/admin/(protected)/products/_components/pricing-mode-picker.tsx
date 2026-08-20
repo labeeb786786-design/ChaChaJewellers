@@ -1,5 +1,3 @@
-"use client";
-
 import type { PricingModeEnum } from "@/types/db";
 
 const MODES: Array<{ value: PricingModeEnum; label: string; description: string }> = [
@@ -20,28 +18,26 @@ const MODES: Array<{ value: PricingModeEnum; label: string; description: string 
   },
 ];
 
-export function PricingModePicker({
-  value,
-  onChange,
-}: {
-  value: PricingModeEnum;
-  onChange: (mode: PricingModeEnum) => void;
-}) {
+/**
+ * Read-only display, not a control — pricing mode is derived one-to-one
+ * from the chosen category (pricingModeForCategorySlug in lib/pricing.ts),
+ * never a free admin choice. value is null before a category is chosen,
+ * when no mode has been determined yet; every card renders unselected in
+ * that state. The explanation of *why* it's locked lives in product-form.tsx,
+ * since the wording depends on which category is selected.
+ */
+export function PricingModePicker({ value }: { value: PricingModeEnum | null }) {
   return (
-    <div className="grid gap-2" role="radiogroup" aria-label="How this is priced">
+    <div className="grid gap-2" role="radiogroup" aria-label="How this is priced" aria-readonly="true">
       {MODES.map((mode) => {
         const selected = value === mode.value;
         return (
-          <button
+          <div
             key={mode.value}
-            type="button"
             role="radio"
             aria-checked={selected}
-            onClick={() => onChange(mode.value)}
             className={`flex w-full items-start gap-2.75 rounded-[7px] border px-3.25 py-2.75 text-left ${
-              selected
-                ? "border-admin-gold bg-admin-gold-soft"
-                : "border-admin-rule-strong bg-admin-surface hover:border-admin-faint"
+              selected ? "border-admin-gold bg-admin-gold-soft" : "border-admin-rule-strong bg-admin-surface opacity-60"
             }`}
           >
             <span
@@ -56,7 +52,7 @@ export function PricingModePicker({
               <strong className="block text-sm font-semibold text-admin-ink">{mode.label}</strong>
               <span className="text-xs text-admin-muted">{mode.description}</span>
             </span>
-          </button>
+          </div>
         );
       })}
     </div>

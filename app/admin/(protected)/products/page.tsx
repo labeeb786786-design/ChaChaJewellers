@@ -69,7 +69,7 @@ export default async function AdminProductsPage({
   let productsQuery = supabase
     .from("products")
     .select(
-      "id, sku, name, pricing_mode, weight_grams, price_pence, is_active, category:categories(name), product_images(storage_path)",
+      "id, sku, name, pricing_mode, weight_grams, price_pence, is_active, size_label, category:categories(name), product_images(storage_path)",
       { count: "exact" },
     )
     .eq("product_images.is_primary", true)
@@ -128,6 +128,7 @@ export default async function AdminProductsPage({
       name: product.name,
       categoryName: product.category?.name ?? "Uncategorised",
       weightGrams: product.weight_grams,
+      sizeLabel: product.size_label,
       pricePence: product.price_pence,
       isActive: product.is_active,
       isBlocked: blockedIds.has(product.id),

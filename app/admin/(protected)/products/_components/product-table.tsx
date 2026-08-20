@@ -11,6 +11,7 @@ export type DisplayProduct = {
   name: string;
   categoryName: string;
   weightGrams: number | null;
+  sizeLabel: string | null;
   pricePence: number | null;
   isActive: boolean;
   isBlocked: boolean;
@@ -77,7 +78,7 @@ export function ProductTable({
   return (
     <div className="overflow-hidden rounded-admin-card border border-admin-rule bg-admin-surface">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-165 border-collapse">
+        <table className="w-full min-w-185 border-collapse">
           <thead>
             <tr className="border-b border-admin-rule">
               <th className="px-3.5 py-2.5 text-left font-admin-mono text-[10px] font-semibold tracking-[0.1em] text-admin-faint uppercase">
@@ -88,6 +89,9 @@ export function ProductTable({
               </th>
               <th className="px-3.5 py-2.5 text-left font-admin-mono text-[10px] font-semibold tracking-[0.1em] text-admin-faint uppercase">
                 Weight
+              </th>
+              <th className="px-3.5 py-2.5 text-left font-admin-mono text-[10px] font-semibold tracking-[0.1em] text-admin-faint uppercase">
+                Size
               </th>
               <th className="px-3.5 py-2.5 text-left font-admin-mono text-[10px] font-semibold tracking-[0.1em] text-admin-faint uppercase">
                 Price
@@ -130,6 +134,9 @@ export function ProductTable({
                 <td className="px-3.5 py-3 text-sm text-admin-ink">{product.categoryName}</td>
                 <td className="px-3.5 py-3 font-admin-mono text-sm tabular-nums text-admin-ink">
                   {product.weightGrams !== null ? `${product.weightGrams.toFixed(1)}g` : "—"}
+                </td>
+                <td className="px-3.5 py-3 font-admin-mono text-sm tabular-nums text-admin-ink">
+                  {product.sizeLabel ?? "—"}
                 </td>
                 <td className="px-3.5 py-3 font-admin-mono text-sm tabular-nums text-admin-ink">
                   {product.pricePence !== null ? formatMoney(product.pricePence) : "—"}

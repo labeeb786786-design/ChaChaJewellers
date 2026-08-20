@@ -90,11 +90,26 @@ export function PriceBreakdown({
   pricingMode,
   fixedPrice,
   preview,
+  hasCategory,
 }: {
   pricingMode: PricingModeEnum;
   fixedPrice: string;
   preview: PricePreview;
+  hasCategory: boolean;
 }) {
+  if (!hasCategory) {
+    return (
+      <div className="rounded-admin-card border border-admin-rule bg-admin-surface p-4.5 font-admin-mono">
+        <div className={legendClasses()}>
+          <span>Price breakdown</span>
+        </div>
+        <p className="py-1.25 text-xs text-admin-muted">
+          Choose a category first — it decides how this is priced.
+        </p>
+      </div>
+    );
+  }
+
   if (pricingMode === "fixed") {
     return (
       <div className="rounded-admin-card border border-admin-rule bg-admin-surface p-4.5 font-admin-mono">

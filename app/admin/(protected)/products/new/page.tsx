@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { z } from "zod";
 
-import { categoryOptionSchema } from "@/lib/schemas/category";
+import { categoryFormOptionSchema } from "@/lib/schemas/category";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "../_components/product-form";
 
@@ -14,7 +14,7 @@ export default async function NewProductPage() {
 
   const { data: categoryRows, error } = await supabase
     .from("categories")
-    .select("id, name")
+    .select("id, name, slug, parent_id, size_type")
     .eq("is_active", true)
     .order("sort_order");
 
@@ -22,7 +22,7 @@ export default async function NewProductPage() {
     throw new Error(`Could not load categories: ${error.message}`);
   }
 
-  const categories = z.array(categoryOptionSchema).parse(categoryRows ?? []);
+  const categories = z.array(categoryFormOptionSchema).parse(categoryRows ?? []);
 
   return <ProductForm categories={categories} />;
 }

@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { parseMoney } from "@/lib/money";
-import type { CategoryOption } from "@/lib/schemas/category";
+import { pricingModeForCategorySlug } from "@/lib/pricing";
+import type { CategoryFormOption, SizeType } from "@/lib/schemas/category";
 import type { UploadedImage } from "@/lib/schemas/product-image";
 import {
   defaultProductFormState,
@@ -13,6 +14,7 @@ import {
   type ProductFormErrors,
   type ProductFormState,
 } from "@/lib/schemas/product-form";
+import { BANGLE_DIAMETER_OPTIONS, RING_LETTER_OPTIONS } from "@/lib/size";
 import { slugify, suggestSku } from "@/lib/slug";
 import type { MetalEnum, ProductTypeEnum, PurityEnum } from "@/types/db";
 import { createProduct, publishProduct, unpublishProduct, updateProduct } from "../actions";
@@ -36,6 +38,32 @@ const PRODUCT_TYPE_OPTIONS: Array<{ value: ProductTypeEnum; label: string }> = [
   { value: "in_stock", label: "In stock" },
   { value: "made_to_order", label: "Made to order" },
 ];
+
+const SIZE_FIELD_LABEL: Record<Exclude<SizeType, "none">, string> = {
+  ring_letter: "Ring size",
+  bangle_diameter: "Bangle size",
+  length_inches: "Length",
+  hoop_mm: "Hoop size",
+};
+const SIZE_FIELD_HINT: Record<Exclude<SizeType, "none">, string> = {
+  ring_letter: "UK letter size",
+  bangle_diameter: "Certified diameter",
+  length_inches: "In inches",
+  hoop_mm: "In millimetres",
+};
+
+/**
+ * Mirrors pricingModeForCategorySlug() (lib/pricing.ts) in words, for the
+ * line under the now-locked mode picker — the admin should understand the
+ * rule, not just find the control dead. This is display copy only; the
+ * server derives and enforces the actual mode independently.
+ */
+function pricingModeExplanation(category: CategoryFormOption | undefined): string {
+  if (!category) return "Choose a category — it sets the pricing mode for you.";
+  if (category.slug === "bullion") return "Bullion is always priced from the live gold rate.";
+  if (category.slug === "diamond") return "Diamond is always a fixed price.";
+  return "This category is priced from the live gold rate, so the mode is set for you.";
+}
 
 function Field({
   label,
@@ -80,7 +108,7 @@ export function ProductForm({
   initialImages,
 }: {
   productId?: string;
-  categories: CategoryOption[];
+  categories: CategoryFormOption[];
   initialValues?: ProductFormState;
   initialImages?: UploadedImage[];
 }) {
@@ -114,6 +142,55 @@ export function ProductForm({
       if (!prev[key]) return prev;
       const next = { ...prev };
       delete next[key];
+      return next;
+    });
+  }
+
+  // Categories with children (currently only Earrings) become a
+  // non-selectable optgroup header in the dropdown below — the admin must
+  // pick a child. size_type comes from whichever category is selected, and
+  // drives which size control (if any) renders.
+  const topLevelCategories = categories.filter((category) => category.parent_id === null);
+  const childCategoriesByParent = new Map<string, CategoryFormOption[]>();
+  for (const category of categories) {
+    if (!category.parent_id) continue;
+    const siblings = childCategoriesByParent.get(category.parent_id) ?? [];
+    siblings.push(category);
+    childCategoriesByParent.set(category.parent_id, siblings);
+  }
+
+  const selectedCategory = categories.find((category) => category.id === values.categoryId);
+  const sizeType: SizeType = selectedCategory?.size_type ?? "none";
+  // No category means no valid pricing mode and no size type — the weight
+  // and price inputs stay disabled, the size field stays hidden (already
+  // true, since sizeType above falls back to "none"), and the price
+  // breakdown shows an explanatory message instead of calculating. This
+  // also covers the Earrings group header: it's never a selectable
+  // categoryId to begin with, so it can never make hasCategory true.
+  const hasCategory = values.categoryId !== "";
+
+  // Switching category resets the size value only when the size type
+  // actually changes — e.g. Rings -> Diamond (both ring_letter) keeps
+  // whatever was entered; Rings -> Bangles clears it, since an "N½" ring
+  // letter isn't a valid bangle diameter. Pricing mode is set from the
+  // category every time, one-to-one — never left for the admin to pick;
+  // see pricingModeForCategorySlug in lib/pricing.ts, re-derived
+  // server-side from the same rule and never trusted from this state.
+  function handleCategoryChange(newCategoryId: string) {
+    const newCategory = categories.find((category) => category.id === newCategoryId);
+    const newSizeType = newCategory?.size_type ?? "none";
+    const sizeTypeChanged = newSizeType !== sizeType;
+
+    setValues((prev) => ({
+      ...prev,
+      categoryId: newCategoryId,
+      pricingMode: newCategory ? pricingModeForCategorySlug(newCategory.slug) : prev.pricingMode,
+      sizeValue: sizeTypeChanged ? "" : prev.sizeValue,
+    }));
+    setErrors((prev) => {
+      if (!prev.categoryId) return prev;
+      const next = { ...prev };
+      delete next.categoryId;
       return next;
     });
   }
@@ -305,15 +382,29 @@ export function ProductForm({
                 <select
                   id="pf-category"
                   value={values.categoryId}
-                  onChange={(event) => set("categoryId", event.target.value)}
+                  onChange={(event) => handleCategoryChange(event.target.value)}
                   className={`${inputClasses} ${errors.categoryId ? errorInputClasses : ""}`}
                 >
                   <option value="">Choose a category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
+                  {topLevelCategories.map((category) => {
+                    const children = childCategoriesByParent.get(category.id);
+                    if (children && children.length > 0) {
+                      return (
+                        <optgroup key={category.id} label={category.name}>
+                          {children.map((child) => (
+                            <option key={child.id} value={child.id}>
+                              {category.name} › {child.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    }
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </Field>
               <Field
@@ -333,12 +424,45 @@ export function ProductForm({
                 />
               </Field>
             </div>
+
+            {sizeType !== "none" && (
+              <Field label={SIZE_FIELD_LABEL[sizeType]} htmlFor="pf-size" hint={SIZE_FIELD_HINT[sizeType]}>
+                {sizeType === "ring_letter" || sizeType === "bangle_diameter" ? (
+                  <select
+                    id="pf-size"
+                    value={values.sizeValue}
+                    onChange={(event) => set("sizeValue", event.target.value)}
+                    className={inputClasses}
+                  >
+                    <option value="">Choose a size</option>
+                    {(sizeType === "ring_letter" ? RING_LETTER_OPTIONS : BANGLE_DIAMETER_OPTIONS).map(
+                      (option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                ) : (
+                  <input
+                    id="pf-size"
+                    type="number"
+                    min={0}
+                    step={sizeType === "hoop_mm" ? 1 : 0.1}
+                    value={values.sizeValue}
+                    onChange={(event) => set("sizeValue", event.target.value)}
+                    className={inputClasses}
+                  />
+                )}
+              </Field>
+            )}
           </div>
 
           <div className="space-y-3.5 border-b border-admin-rule p-4.5">
             <Legend>How this is priced</Legend>
 
-            <PricingModePicker value={values.pricingMode} onChange={(next) => set("pricingMode", next)} />
+            <PricingModePicker value={hasCategory ? values.pricingMode : null} />
+            <p className="text-xs text-admin-faint">{pricingModeExplanation(selectedCategory)}</p>
 
             <div className="grid gap-3 sm:grid-cols-2">
               {isDynamic ? (
@@ -346,7 +470,7 @@ export function ProductForm({
                   <Field
                     label="Weight in grams"
                     htmlFor="pf-weight"
-                    hint="From your scale, to 2 decimal places"
+                    hint={hasCategory ? "From your scale, to 2 decimal places" : "Choose a category first"}
                     error={errors.weightGrams}
                   >
                     <input
@@ -354,9 +478,10 @@ export function ProductForm({
                       type="number"
                       step="0.01"
                       min={0}
+                      disabled={!hasCategory}
                       value={values.weightGrams}
                       onChange={(event) => set("weightGrams", event.target.value)}
-                      className={`${inputClasses} ${errors.weightGrams ? errorInputClasses : ""}`}
+                      className={`${inputClasses} ${!hasCategory ? readonlyClasses : ""} ${errors.weightGrams ? errorInputClasses : ""}`}
                     />
                   </Field>
                   <Field label="Price" htmlFor="pf-calc-price" hint="Worked out for you, updates twice daily">
@@ -374,7 +499,7 @@ export function ProductForm({
                   <Field
                     label="Price"
                     htmlFor="pf-fixed-price"
-                    hint="In pounds, e.g. 1295.00"
+                    hint={hasCategory ? "In pounds, e.g. 1295.00" : "Choose a category first"}
                     error={errors.fixedPrice}
                   >
                     <input
@@ -382,9 +507,10 @@ export function ProductForm({
                       type="text"
                       inputMode="decimal"
                       placeholder="1295.00"
+                      disabled={!hasCategory}
                       value={values.fixedPrice}
                       onChange={(event) => set("fixedPrice", event.target.value)}
-                      className={`${inputClasses} ${errors.fixedPrice ? errorInputClasses : ""}`}
+                      className={`${inputClasses} ${!hasCategory ? readonlyClasses : ""} ${errors.fixedPrice ? errorInputClasses : ""}`}
                     />
                   </Field>
                   <Field
@@ -554,7 +680,12 @@ export function ProductForm({
         </div>
 
         <div className="sticky top-4.5">
-          <PriceBreakdown pricingMode={values.pricingMode} fixedPrice={values.fixedPrice} preview={preview} />
+          <PriceBreakdown
+            pricingMode={values.pricingMode}
+            fixedPrice={values.fixedPrice}
+            preview={preview}
+            hasCategory={hasCategory}
+          />
 
           {saveError && (
             <div className="mt-3.5 rounded-admin-control border border-[#efcfcf] bg-admin-danger-soft px-3 py-2.5 text-sm text-[#7a2020]">

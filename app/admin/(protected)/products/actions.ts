@@ -9,6 +9,7 @@ import {
   calculateProductPrice,
   canPublish,
   findBand,
+  resolveCategoryDerivedFields,
   resolvePriceWriteFields,
   type PricingBand,
 } from "@/lib/pricing";
@@ -90,7 +91,11 @@ export async function ensureDraftProduct(input: {
  *
  * Re-validates server-side with the same productFormSchema the client
  * already ran — "a form-only check is bypassed by any future non-form
- * route" applies here too, not only to canPublish().
+ * route" applies here too, not only to canPublish(). The category's
+ * pricing mode is resolved and substituted BEFORE that validation runs, so
+ * whatever pricingMode the client sent (the picker is locked in the UI, but
+ * nothing stops a direct call) never decides whether weight or a fixed
+ * price gets required.
  */
 export async function createProduct(
   values: ProductFormState,
@@ -102,13 +107,16 @@ export async function createProduct(
     throw error;
   }
 
-  const fieldErrors = validateProductForm(values);
+  const supabase = await createClient();
+  const derived = await resolveCategoryDerivedFields(supabase, values.categoryId, values.sizeValue);
+  const correctedValues: ProductFormState = { ...values, pricingMode: derived.pricingMode };
+
+  const fieldErrors = validateProductForm(correctedValues);
   if (Object.keys(fieldErrors).length > 0) {
     return { fieldErrors };
   }
 
-  const supabase = await createClient();
-  const fields = coerceProductFields(values);
+  const fields = coerceProductFields(correctedValues);
 
   try {
     const [slug, sku, priceFields] = await Promise.all([
@@ -124,7 +132,15 @@ export async function createProduct(
 
     const { data, error } = await supabase
       .from("products")
-      .insert({ ...fields, ...priceFields, slug, sku, is_active: false })
+      .insert({
+        ...fields,
+        ...priceFields,
+        size_label: derived.size_label,
+        size_sort: derived.size_sort,
+        slug,
+        sku,
+        is_active: false,
+      })
       .select("id, slug")
       .single();
 
@@ -146,6 +162,13 @@ export async function createProduct(
  * unpublishProduct() own that, independently, so a "Save as draft" click
  * can't accidentally publish something and a publish can't skip the
  * zero-markup guard by going through this action instead.
+ *
+ * Like createProduct(), the category's pricing mode is resolved and
+ * substituted before validation — including for a product whose stored
+ * mode has drifted from its category (e.g. legacy data, or a category
+ * reassigned some other way): every save re-derives and corrects it, and
+ * the price gets recalculated against the corrected mode as a result of
+ * that, not a special case.
  */
 export async function updateProduct(
   productId: string,
@@ -158,13 +181,16 @@ export async function updateProduct(
     throw error;
   }
 
-  const fieldErrors = validateProductForm(values);
+  const supabase = await createClient();
+  const derived = await resolveCategoryDerivedFields(supabase, values.categoryId, values.sizeValue);
+  const correctedValues: ProductFormState = { ...values, pricingMode: derived.pricingMode };
+
+  const fieldErrors = validateProductForm(correctedValues);
   if (Object.keys(fieldErrors).length > 0) {
     return { fieldErrors };
   }
 
-  const supabase = await createClient();
-  const fields = coerceProductFields(values);
+  const fields = coerceProductFields(correctedValues);
 
   const { data: existing, error: fetchError } = await supabase
     .from("products")
@@ -193,7 +219,13 @@ export async function updateProduct(
 
     const { error } = await supabase
       .from("products")
-      .update({ ...fields, ...priceFields, slug })
+      .update({
+        ...fields,
+        ...priceFields,
+        size_label: derived.size_label,
+        size_sort: derived.size_sort,
+        slug,
+      })
       .eq("id", productId);
 
     if (error) {
@@ -419,7 +451,7 @@ export async function duplicateProduct(productId: string): Promise<ActionResult<
   const { data: source, error: fetchError } = await supabase
     .from("products")
     .select(
-      "name, short_description, description, category_id, product_type, pricing_mode, metal, purity, weight_grams, price_pence, stock_quantity, lead_time_days, is_featured, sort_order, tags",
+      "name, short_description, description, category_id, product_type, pricing_mode, metal, purity, weight_grams, price_pence, stock_quantity, lead_time_days, is_featured, sort_order, tags, size_label, size_sort",
     )
     .eq("id", productId)
     .is("removed_at", null)

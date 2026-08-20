@@ -46,6 +46,7 @@ export type OrderStatusEnum =
 export type PricingModeEnum = "dynamic_jewellery" | "dynamic_bullion" | "fixed";
 export type ProductTypeEnum = "in_stock" | "made_to_order";
 export type PurityEnum = "24k" | "22k" | "21k" | "18k" | "9k" | "999" | "925";
+export type SizeTypeEnum = "ring_letter" | "length_inches" | "bangle_diameter" | "hoop_mm" | "none";
 
 export interface Database {
   public: {
@@ -106,6 +107,8 @@ export interface Database {
           meta_description: string | null;
           created_at: string;
           updated_at: string;
+          parent_id: string | null;
+          size_type: SizeTypeEnum;
         };
         Insert: {
           id?: string;
@@ -119,9 +122,19 @@ export interface Database {
           meta_description?: string | null;
           created_at?: string;
           updated_at?: string;
+          parent_id?: string | null;
+          size_type?: SizeTypeEnum;
         };
         Update: Partial<Database["public"]["Tables"]["categories"]["Insert"]>;
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       gold_price_log: {
         Row: {
@@ -381,6 +394,8 @@ export interface Database {
           created_at: string;
           updated_at: string;
           removed_at: string | null;
+          size_label: string | null;
+          size_sort: string | null;
           search_vector: string;
         };
         Insert: {
@@ -410,6 +425,8 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           removed_at?: string | null;
+          size_label?: string | null;
+          size_sort?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
         Relationships: [
@@ -573,6 +590,7 @@ export interface Database {
       pricing_mode_enum: PricingModeEnum;
       product_type_enum: ProductTypeEnum;
       purity_enum: PurityEnum;
+      size_type_enum: SizeTypeEnum;
     };
   };
 }

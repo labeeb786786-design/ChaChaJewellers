@@ -1,8 +1,57 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { metalRateSourceSchema, type MetalRateSource } from "@/lib/schemas/pricing";
+import { resolveSizeFields, type SizeWriteFields } from "@/lib/size";
 import type { BandAppliesToEnum, Database, MetalEnum, PricingModeEnum } from "@/types/db";
 
 export type PricingBand = Database["public"]["Tables"]["pricing_bands"]["Row"];
+
+/**
+ * Category determines pricing mode one-to-one — never a free choice.
+ * Bullion is always priced from the live gold rate with no VAT, Diamond is
+ * always a fixed price a human types, everything else is ordinary dynamic
+ * jewellery. Matched by slug, not name, since slug is the stable identifier
+ * elsewhere in this codebase (generateSlug, etc.) — a category could be
+ * renamed without changing what it prices as.
+ */
+export function pricingModeForCategorySlug(categorySlug: string): PricingModeEnum {
+  if (categorySlug === "bullion") return "dynamic_bullion";
+  if (categorySlug === "diamond") return "fixed";
+  return "dynamic_jewellery";
+}
+
+export type CategoryDerivedFields = { pricingMode: PricingModeEnum } & SizeWriteFields;
+
+/**
+ * Everything about a product's category that isn't safe to trust from the
+ * client: the pricing mode it locks the mode picker to, and the size
+ * fields for its size_type. One query, since both come off the same
+ * categories row — never trust a client-sent pricing_mode or size_type,
+ * only the categoryId (a plain id lookup, nothing to fake into a
+ * different answer).
+ */
+export async function resolveCategoryDerivedFields(
+  supabase: SupabaseClient<Database>,
+  categoryId: string,
+  rawSizeInput: string,
+): Promise<CategoryDerivedFields> {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("slug, size_type")
+    .eq("id", categoryId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return { pricingMode: "dynamic_jewellery", size_label: null, size_sort: null };
+  }
+
+  const size = resolveSizeFields(data.size_type, rawSizeInput);
+
+  return {
+    pricingMode: pricingModeForCategorySlug(data.slug),
+    size_label: size.sizeLabel,
+    size_sort: size.sizeSort === null ? null : String(size.sizeSort),
+  };
+}
 
 /** dynamic_jewellery -> jewellery, dynamic_bullion -> bullion. `fixed` has no band. */
 export function appliesToForMode(mode: PricingModeEnum): BandAppliesToEnum | null {

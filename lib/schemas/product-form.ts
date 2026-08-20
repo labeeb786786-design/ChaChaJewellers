@@ -12,6 +12,12 @@ import { metalSchema, pricingModeSchema, productTypeSchema, puritySchema } from 
 export type ProductFormState = {
   name: string;
   categoryId: string;
+  // Raw value from whichever size control the category's size_type shows
+  // (a dropdown selection or a typed number) — resolved into size_label /
+  // size_sort server-side via resolveCategorySizeFields (lib/size.ts),
+  // never validated here since the category's size_type, not this form
+  // state, decides what "valid" even means for it.
+  sizeValue: string;
   stockQuantity: string;
   pricingMode: z.infer<typeof pricingModeSchema>;
   weightGrams: string;
@@ -30,6 +36,7 @@ export type ProductFormState = {
 export const defaultProductFormState: ProductFormState = {
   name: "",
   categoryId: "",
+  sizeValue: "",
   stockQuantity: "1",
   pricingMode: "dynamic_jewellery",
   weightGrams: "",

@@ -21,6 +21,7 @@ export const productListRowSchema = z.object({
   weight_grams: z.coerce.number().nullable(),
   price_pence: z.number().nullable(),
   is_active: z.boolean(),
+  size_label: z.string().nullable(),
   category: z.object({ name: z.string() }).nullable(),
   product_images: z.array(z.object({ storage_path: z.string() })),
 });
@@ -55,5 +56,6 @@ export const productDetailSchema = z.object({
   is_featured: z.boolean(),
   sort_order: z.number(),
   tags: z.array(z.string()),
+  size_label: z.string().nullable(),
 });
 export type ProductDetail = z.infer<typeof productDetailSchema>;
