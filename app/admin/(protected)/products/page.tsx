@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 const PAGE_SIZE = 25;
+const NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
 type ProductsSearchParams = {
   q?: string;
@@ -44,7 +45,8 @@ export default async function AdminProductsPage({
 
   const q = (params.q ?? "").trim();
   const categoryId = params.category ?? "";
-  const status = params.status === "live" || params.status === "draft" ? params.status : "";
+  const status =
+    params.status === "live" || params.status === "draft" || params.status === "blocked" ? params.status : "";
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const filters = { q, category: categoryId, status };
 
@@ -66,41 +68,11 @@ export default async function AdminProductsPage({
   }
   const categories = z.array(categoryOptionSchema).parse(categoriesResult.data ?? []);
 
-  let productsQuery = supabase
-    .from("products")
-    .select(
-      "id, sku, name, pricing_mode, weight_grams, price_pence, is_active, size_label, category:categories(name), product_images(storage_path)",
-      { count: "exact" },
-    )
-    .eq("product_images.is_primary", true)
-    .is("removed_at", null)
-    .order("created_at", { ascending: false });
-
-  if (q) {
-    productsQuery = productsQuery.textSearch("search_vector", q, { type: "websearch" });
-  }
-  if (categoryId) {
-    productsQuery = productsQuery.eq("category_id", categoryId);
-  }
-  if (status) {
-    productsQuery = productsQuery.eq("is_active", status === "live");
-  }
-
-  const from = (page - 1) * PAGE_SIZE;
-  const { data: productRows, count: filteredCount, error } = await productsQuery.range(
-    from,
-    from + PAGE_SIZE - 1,
-  );
-
-  if (error) {
-    throw new Error(`Could not load products: ${error.message}`);
-  }
-
-  const products = z.array(productListRowSchema).parse(productRows ?? []);
-
   // Zero-markup guard, run across the whole catalogue (not just this page) so
   // the banner count and "Can't publish" pills agree no matter which page or
-  // filter you're looking at. See findBlockedProductIds in lib/pricing.ts.
+  // filter you're looking at — and so the "blocked" status filter below has
+  // the full set to filter against, not just this page's slice. See
+  // findBlockedProductIds in lib/pricing.ts.
   const { data: weightRows, error: weightError } = await supabase
     .from("products")
     .select("id, pricing_mode, weight_grams")
@@ -119,6 +91,43 @@ export default async function AdminProductsPage({
       weightGrams: row.weight_grams,
     })),
   );
+
+  let productsQuery = supabase
+    .from("products")
+    .select(
+      "id, sku, name, pricing_mode, weight_grams, price_pence, is_active, size_label, category:categories(name), product_images(storage_path)",
+      { count: "exact" },
+    )
+    .eq("product_images.is_primary", true)
+    .is("removed_at", null)
+    .order("created_at", { ascending: false });
+
+  if (q) {
+    productsQuery = productsQuery.textSearch("search_vector", q, { type: "websearch" });
+  }
+  if (categoryId) {
+    productsQuery = productsQuery.eq("category_id", categoryId);
+  }
+  if (status === "blocked") {
+    // "blocked" isn't a column — filter to the ids the guard above already
+    // found. An empty list would otherwise mean "no filter" to .in(), so
+    // fall back to a uuid nothing can match rather than showing everything.
+    productsQuery = productsQuery.in("id", blockedIds.size > 0 ? [...blockedIds] : [NIL_UUID]);
+  } else if (status) {
+    productsQuery = productsQuery.eq("is_active", status === "live");
+  }
+
+  const from = (page - 1) * PAGE_SIZE;
+  const { data: productRows, count: filteredCount, error } = await productsQuery.range(
+    from,
+    from + PAGE_SIZE - 1,
+  );
+
+  if (error) {
+    throw new Error(`Could not load products: ${error.message}`);
+  }
+
+  const products = z.array(productListRowSchema).parse(productRows ?? []);
 
   const displayProducts: DisplayProduct[] = products.map((product) => {
     const primaryImagePath = product.product_images[0]?.storage_path;

@@ -260,3 +260,54 @@ export async function findBlockedProductIds(
 
   return blocked;
 }
+
+export type BlockedBandsSummary = {
+  count: number;
+  /** e.g. ["75g+", "bullion"] — jewellery bands named individually since each is otherwise distinct; bullion collapsed to the domain name rather than its literal band label ("all"), which reads oddly on its own. */
+  bandLabels: string[];
+};
+
+/**
+ * For the dashboard's blocked-products card, which needs to name the
+ * responsible bands ("75g+ and bullion are still at 0% markup"), not just
+ * count them. Calls findBlockedProductIds() for the actual decision — never
+ * reimplemented — then only looks up bands for the (typically few) already-
+ * confirmed-blocked products, to label them.
+ */
+export async function summarizeBlockedBands(
+  supabase: SupabaseClient<Database>,
+  products: Array<{ id: string; pricingMode: PricingModeEnum; weightGrams: number | null }>,
+): Promise<BlockedBandsSummary> {
+  const blockedIds = await findBlockedProductIds(supabase, products);
+  if (blockedIds.size === 0) {
+    return { count: 0, bandLabels: [] };
+  }
+
+  const bandByKey = new Map<string, PricingBand | null>();
+  const jewelleryBandLabels = new Set<string>();
+  let hasBlockedBullion = false;
+
+  for (const product of products) {
+    if (!blockedIds.has(product.id)) continue;
+
+    const appliesTo = appliesToForMode(product.pricingMode);
+    if (!appliesTo || product.weightGrams === null) continue;
+
+    if (appliesTo === "bullion") {
+      hasBlockedBullion = true;
+      continue;
+    }
+
+    const key = `${appliesTo}:${product.weightGrams}`;
+    if (!bandByKey.has(key)) {
+      bandByKey.set(key, await findBand(supabase, appliesTo, product.weightGrams));
+    }
+    const band = bandByKey.get(key);
+    if (band) jewelleryBandLabels.add(band.label);
+  }
+
+  const bandLabels = [...jewelleryBandLabels];
+  if (hasBlockedBullion) bandLabels.push("bullion");
+
+  return { count: blockedIds.size, bandLabels };
+}

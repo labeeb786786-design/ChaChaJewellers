@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const ADMIN_NAV_LINKS = [
+  { label: "Dashboard", href: "/admin" },
   { label: "Products", href: "/admin/products" },
   { label: "Categories", href: "/admin/categories" },
   { label: "Orders", href: "/admin/orders" },
@@ -18,7 +19,8 @@ export function AdminNav() {
   return (
     <nav className="flex gap-0.5 overflow-x-auto border-b border-admin-rule bg-admin-surface px-5">
       {ADMIN_NAV_LINKS.map((link) => {
-        const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+        const isActive =
+          link.href === "/admin" ? pathname === link.href : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
         return (
           <Link

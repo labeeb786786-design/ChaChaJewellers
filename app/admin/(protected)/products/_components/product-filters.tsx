@@ -6,6 +6,7 @@ const STATUS_OPTIONS = [
   { value: "", label: "All statuses" },
   { value: "live", label: "Live" },
   { value: "draft", label: "Draft" },
+  { value: "blocked", label: "Can't publish" },
 ] as const;
 
 const inputClasses =

@@ -249,6 +249,7 @@ export interface Database {
           paid_at: string | null;
           created_at: string;
           updated_at: string;
+          status_changed_at: string;
         };
         Insert: {
           id?: string;
@@ -277,6 +278,7 @@ export interface Database {
           paid_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          status_changed_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Insert"]>;
         Relationships: [
@@ -328,6 +330,41 @@ export interface Database {
             columns: ["gold_price_log_id"];
             isOneToOne: false;
             referencedRelation: "gold_price_log";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      price_lock_items: {
+        Row: {
+          id: string;
+          price_lock_id: string;
+          product_id: string;
+          quantity: number;
+          unit_price_pence: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          price_lock_id: string;
+          product_id: string;
+          quantity: number;
+          unit_price_pence: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["price_lock_items"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "price_lock_items_price_lock_id_fkey";
+            columns: ["price_lock_id"];
+            isOneToOne: false;
+            referencedRelation: "price_locks";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "price_lock_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
             referencedColumns: ["id"];
           },
         ];
@@ -581,6 +618,22 @@ export interface Database {
       cleanup_abandoned_draft_products: {
         Args: Record<string, never>;
         Returns: { deleted_product_id: string; storage_path: string | null }[];
+      };
+      available_stock: {
+        Args: { p_product_id: string; p_exclude_lock_id?: string };
+        Returns: number | null;
+      };
+      create_price_lock: {
+        Args: { p_items: Json; p_shipping_pence: number; p_duration_minutes?: number };
+        Returns: Database["public"]["Tables"]["price_locks"]["Row"];
+      };
+      consume_price_lock: {
+        Args: { p_lock_id: string; p_payment_intent_id: string };
+        Returns: Database["public"]["Tables"]["price_locks"]["Row"];
+      };
+      release_price_lock: {
+        Args: { p_lock_id: string };
+        Returns: undefined;
       };
     };
     Enums: {
