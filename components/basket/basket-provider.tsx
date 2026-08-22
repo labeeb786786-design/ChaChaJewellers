@@ -8,13 +8,30 @@ import {
   useState,
 } from "react";
 
-import type { ShopProduct } from "@/lib/catalog";
+import { getShopProductBySlug, type ShopProduct } from "@/lib/catalog";
 
 /**
- * Front-end-only basket (no backend/persistence yet). Tracks the products a
- * customer has added, their quantities and the price captured at add-time, plus
- * the open/closed state of the slide-out panel. Swap in a real cart/order API
- * later without changing call sites — the hook shape stays the same.
+ * Front-end-only basket (no backend/persistence yet).
+ *
+ * The basket stores ONLY what the customer chose — a slug and a quantity —
+ * never a price, name or image. Everything displayed is looked up fresh from
+ * the catalogue on each render, so a basket left open across a gold-rate
+ * change shows the new price rather than the one that happened to be on
+ * screen when the item went in. Freezing a price is checkout's job, via the
+ * price lock (`create_price_lock`), not the basket's.
+ *
+ * Swap in a real cart/order API later without changing call sites — the hook
+ * shape stays the same, and `lines` is already the shape a server-side cart
+ * would persist.
+ */
+type BasketLine = {
+  slug: string;
+  quantity: number;
+};
+
+/**
+ * A basket line joined to its current catalogue entry. Derived per render —
+ * never stored, never persisted.
  */
 export type BasketItem = {
   slug: string;
@@ -22,7 +39,7 @@ export type BasketItem = {
   image: string;
   gradient: [string, string];
   karat?: string;
-  /** Price per item in GBP, captured when added. */
+  /** Price per item in GBP, read live from the catalogue — not captured at add-time. */
   price: number;
   quantity: number;
 };
@@ -44,62 +61,79 @@ type BasketContextValue = {
 const BasketContext = createContext<BasketContextValue | null>(null);
 
 export function BasketProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<BasketItem[]>([]);
+  const [lines, setLines] = useState<BasketLine[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const addItem = useCallback((product: ShopProduct, quantity = 1) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.slug === product.slug);
+    setLines((prev) => {
+      const existing = prev.find((l) => l.slug === product.slug);
       if (existing) {
-        return prev.map((i) =>
-          i.slug === product.slug
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
+        return prev.map((l) =>
+          l.slug === product.slug ? { ...l, quantity: l.quantity + quantity } : l
         );
       }
-      return [
-        ...prev,
-        {
-          slug: product.slug,
-          name: product.name,
-          image: product.image,
-          gradient: product.gradient,
-          karat: product.karat,
-          price: product.priceGBP,
-          quantity,
-        },
-      ];
+      return [...prev, { slug: product.slug, quantity }];
     });
   }, []);
 
   const removeItem = useCallback((slug: string) => {
-    setItems((prev) => prev.filter((i) => i.slug !== slug));
+    setLines((prev) => prev.filter((l) => l.slug !== slug));
   }, []);
 
   const setQuantity = useCallback((slug: string, quantity: number) => {
-    setItems((prev) =>
+    setLines((prev) =>
       quantity <= 0
-        ? prev.filter((i) => i.slug !== slug)
-        : prev.map((i) => (i.slug === slug ? { ...i, quantity } : i))
+        ? prev.filter((l) => l.slug !== slug)
+        : prev.map((l) => (l.slug === slug ? { ...l, quantity } : l))
     );
   }, []);
 
-  const clear = useCallback(() => setItems([]), []);
+  const clear = useCallback(() => setLines([]), []);
   const openBasket = useCallback(() => setIsOpen(true), []);
   const closeBasket = useCallback(() => setIsOpen(false), []);
 
-  const { count, subtotal } = useMemo(
+  /*
+   * Joined fresh on every render. A line whose product has since left the
+   * catalogue is dropped rather than rendered from a stale copy — a delisted
+   * piece should leave the basket, not linger at a price nobody honours.
+   */
+  const items = useMemo<BasketItem[]>(
     () =>
-      items.reduce(
-        (acc, i) => {
-          acc.count += i.quantity;
-          acc.subtotal += i.price * i.quantity;
-          return acc;
-        },
-        { count: 0, subtotal: 0 }
-      ),
-    [items]
+      lines.flatMap((line) => {
+        const product = getShopProductBySlug(line.slug);
+        if (!product) return [];
+        return [
+          {
+            slug: product.slug,
+            name: product.name,
+            image: product.image,
+            gradient: product.gradient,
+            karat: product.karat,
+            price: product.priceGBP,
+            quantity: line.quantity,
+          },
+        ];
+      }),
+    [lines]
   );
+
+  /*
+   * Summed in integer pence, then converted back once at the end. Adding
+   * GBP floats accumulates representation error across lines (the classic
+   * 0.1 + 0.2 problem), which is the same hazard `lib/money.ts` exists to
+   * avoid on the admin side.
+   */
+  const { count, subtotal } = useMemo(() => {
+    const totals = items.reduce(
+      (acc, i) => {
+        acc.count += i.quantity;
+        acc.subtotalPence += Math.round(i.price * 100) * i.quantity;
+        return acc;
+      },
+      { count: 0, subtotalPence: 0 }
+    );
+    return { count: totals.count, subtotal: totals.subtotalPence / 100 };
+  }, [items]);
 
   const value = useMemo<BasketContextValue>(
     () => ({
