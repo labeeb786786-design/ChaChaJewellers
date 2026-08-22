@@ -185,15 +185,6 @@
   background-attachment: fixed;
 }
 
-/* Hide the scrollbar on horizontal scrollers (scrolling still works). */
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 /* Hide native number-input spinners (we provide themed +/- steppers). */
 .no-spinner::-webkit-inner-spin-button,
 .no-spinner::-webkit-outer-spin-button {

@@ -42,3 +42,9 @@ next-env.d.ts
 
 # local dev server log
 dev.log
+
+# IDE state (Visual Studio / VS workspace)
+.vs/
+
+# supabase CLI local state (machine-specific link + version cache)
+supabase/.temp/
